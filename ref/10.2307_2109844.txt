@@ -1,0 +1,15 @@
+@article{10.2307/2109844,
+ ISSN = {00346535, 15309142},
+ URL = {http://www.jstor.org/stable/2109844},
+ abstract = {Adverse shocks to the economy may be amplified by worsening credit-market conditions--the "financial accelerator." Theoretically, we interpret the financial accelerator as resulting from endogenous changes over the business cycle in the agency costs of lending. An implication of the theory is that, at the onset of a recession, borrowers facing high agency costs should receive a relatively lower share of credit extended (the flight to quality) and hence should account for a proportionally greater part of the decline in economic activity. We review the evidence for these predictions and present new evidence drawn from a panel of large and small manufacturing firms.},
+ author = {Ben Bernanke and Mark Gertler and Simon Gilchrist},
+ journal = {The Review of Economics and Statistics},
+ number = {1},
+ pages = {1--15},
+ publisher = {The MIT Press},
+ title = {The Financial Accelerator and the Flight to Quality},
+ urldate = {2023-02-19},
+ volume = {78},
+ year = {1996}
+}
+

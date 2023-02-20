@@ -1,0 +1,17 @@
+TY  - JOUR
+AU  - Santos, Toni Ricardo Eugenio dos
+AU  - Nakane, Marcio Issao
+PY  - 2021
+DA  - 2021/07/01
+TI  - Dynamic bank runs: an agent-based approach
+JO  - Journal of Economic Interaction and Coordination
+SP  - 675
+EP  - 703
+VL  - 16
+IS  - 3
+AB  - This paper simulates bank runs by using an agent-based approach to assess the depositors’ behavior under various scenarios in a Diamond-Dybvig model framework to answer the following question: What happens if several depositors and banks play in multiple rounds of a Diamond-Dybvig economy? The main contribution to the literature is that we consider a sequential service restriction and the influence of the neighborhood in the decision of patient depositors to withdraw earlier or later. Our simulations show that the number of bank failures goes to zero if the amount that banks pay to those who need liquidity is under a certain value. If this amount is above this value, the bank runs continue to occur after a long period and the market concentration is higher than in the former scenario. When wealth accumulation is allowed in the benchmark formulation, bank runs reduce and market concentration increases.
+SN  - 1860-7128
+UR  - https://doi.org/10.1007/s11403-021-00325-6
+DO  - 10.1007/s11403-021-00325-6
+ID  - Santos2021
+ER  - 
