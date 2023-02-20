@@ -4,6 +4,10 @@
 %% Bibliography
 \usepackage{natbib}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
 
 \title{Master Thesis : \\ 
 Currency Substitution Due to Cross-border CBDC and Its Implications in Financial Stabilities}
@@ -12,11 +16,15 @@ Currency Substitution Due to Cross-border CBDC and Its Implications in Financial
 
 \begin{document}
     \maketitle
+    \begin{abstract}
+        \input{section/abstract.tex}
+    \end{abstract}
 
+    \section{Introduction}
     \section{Model}
     \input{section/model.tex} 
 
-    
+
     \bibliographystyle{apalike}
     \bibliography{ref/ref.bib}
 \end{document}
