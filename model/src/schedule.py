@@ -66,7 +66,7 @@ class CScheduler(BaseScheduler):
         self._seller_buyer_toggle_step()
         
     def _consumption_decision_step(self) -> None:
-        logger.debug("Consumption decision step")
+        print("Consumption decision step")
         
         buyer_consumption_decision_order : Iterator[CAgent] = self._buyer_activation_order()
         
@@ -75,15 +75,17 @@ class CScheduler(BaseScheduler):
         return
 
     def _consumption_bundling_step(self) -> None:
-        logger.debug("Consumption bundling step")
+        print("Consumption bundling step")
+
+
         return
 
     def _seller_summarize_step(self) -> None:
-        logger.debug("Seller summarization step")
+        print("Seller summarization step")
         return
 
     def _seller_buyer_toggle_step(self) -> None:
-        logger.debug("Seller buyer toggle step")
+        print("Seller buyer toggle step")
         return
 
 

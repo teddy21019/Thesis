@@ -22,7 +22,7 @@ class CAgent(mesa.Agent):
         self.type : AgentType = type
         
     def decide_consumption(self, *args, **kargs) -> float:
-        logger.debug(f"Deciding consumptions for buyer {self.unique_id}")
+        print(f"Deciding consumptions for buyer {self.unique_id}")
         budget = self.y * 0.5
         return budget 
     

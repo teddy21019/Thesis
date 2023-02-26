@@ -30,7 +30,7 @@ class CModel(mesa.Model):
 
     
     def _create_agents(self):
-        logger.debug("Creating agents")
+        print("Creating agents")
         self._init_buyers()
         self._init_sellers()
     
