@@ -60,6 +60,20 @@ class CScheduler(BaseScheduler):
 
     
     def step(self) -> None:
+        """
+        The standard step for the model. 
+
+        - Consumption Decision Step : Each buyer decides how much to buy, save,
+        given the environment value and recent state variables such as
+        endowment/ production
+        - Consumption Bundling Step : Each buyer decides an array of consumption
+        bundles, and consume until its budget is reached
+        - Seller Summarize Step : After all the trading is conducted, the seller
+        summarizes their inventory and price, and adjusts their behavior
+        accordingly. Means of payment decision is also performed in this step
+        - Seller-Buyer Toggle Step : The seller becomes a buyer according to
+        some criteria.
+        """
         self._consumption_decision_step()
         self._consumption_bundling_step()
         self._seller_summarize_step()
