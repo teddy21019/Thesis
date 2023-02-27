@@ -1,7 +1,9 @@
 from __future__ import annotations
 from random import Random
 from mesa.time import BaseScheduler
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING, Callable, Iterator
+
+from numpy import add
 
 from src.agent import AgentType
 
@@ -14,6 +16,8 @@ if TYPE_CHECKING:
     from src.agent import CAgent, AgentType
     from src.model import CModel
     from src.schedule import CScheduler
+
+    
 class CScheduler(BaseScheduler):
     """
     The baseline scheduler that defines the basic structure of the model. 
@@ -43,6 +47,20 @@ class CScheduler(BaseScheduler):
             return
         
         raise AgentTypeException(type, f"No such type as {type} exist") 
+
+
+    def step(self) -> None:
+        
+        procedure_list = [
+            self._consumption_decision_step,
+            self._consumption_bundling_step,
+            self._seller_summarize_step,
+            self._seller_buyer_toggle_step
+        ]
+        
+        for func in procedure_list:
+            add_separate_line(func)()
+        
     
     def _add_buyer(self, agent: CAgent) -> None :
         agent_id = agent.unique_id
@@ -61,6 +79,10 @@ class CScheduler(BaseScheduler):
     def sellers(self):
         return self._sellers
     
+    @property
+    def buyers(self):
+        return self._buyers
+
     def seller_exists(self, seller:CAgent | int ):
         from src.agent import CAgent
 
@@ -77,19 +99,7 @@ class CScheduler(BaseScheduler):
             return buyer in self._buyers
         raise ValueError("Agent type error!")
 
-    @property
-    def buyers(self):
-        return self._buyers
-
     
-    def step(self) -> None:
-        self._consumption_decision_step()
-        print("========================")
-        self._consumption_bundling_step()
-        print("========================")
-        self._seller_summarize_step()
-        print("========================")
-        self._seller_buyer_toggle_step()
         
     def _consumption_decision_step(self) -> None:
         logger.debug("Consumption decision step")
@@ -127,6 +137,13 @@ class CScheduler(BaseScheduler):
             if key in self._buyers:
                 yield self._buyers[key] 
 
+
+def add_separate_line(func: Callable, *args, **kargs) -> Callable:
+    def print_sep_after_func(*args, **kargs):
+        func(*args, **kargs)
+        print("====================")
+
+    return print_sep_after_func
 
 class AgentTypeException(Exception):
     def __init__(self,type,message):
