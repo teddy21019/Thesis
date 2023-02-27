@@ -2,6 +2,7 @@ from __future__ import annotations
 from random import Random
 from mesa.time import BaseScheduler
 from typing import TYPE_CHECKING, Iterator
+
 from src.agent import AgentType
 
 import logging
@@ -56,13 +57,38 @@ class CScheduler(BaseScheduler):
             raise RepeatAgentError(id = agent_id)
         self._sellers[agent_id] = agent
 
+    @property
+    def sellers(self):
+        return self._sellers
+    
+    def seller_exists(self, seller:CAgent | int ):
+        from src.agent import CAgent
 
+        if isinstance(seller, CAgent):
+            return seller.unique_id in self._sellers
+        elif isinstance(seller, int):
+            return seller in self._sellers
+        raise ValueError("Agent type error!")
+
+    def buyer_exists(self, buyer:CAgent | int ):
+        if isinstance(buyer, CAgent):
+            return buyer.unique_id in self._buyers
+        elif isinstance(buyer, int):
+            return buyer in self._buyers
+        raise ValueError("Agent type error!")
+
+    @property
+    def buyers(self):
+        return self._buyers
 
     
     def step(self) -> None:
         self._consumption_decision_step()
+        print("========================")
         self._consumption_bundling_step()
+        print("========================")
         self._seller_summarize_step()
+        print("========================")
         self._seller_buyer_toggle_step()
         
     def _consumption_decision_step(self) -> None:
@@ -76,6 +102,11 @@ class CScheduler(BaseScheduler):
 
     def _consumption_bundling_step(self) -> None:
         logger.debug("Consumption bundling step")
+        buyer_shopping_order : Iterator[CAgent] = self._buyer_activation_order()
+
+        for buyer in buyer_shopping_order:
+            seller_candidate : Iterator[CAgent] = buyer.seller_candidate
+            buyer.shop(seller_candidate)
         return
 
     def _seller_summarize_step(self) -> None:
