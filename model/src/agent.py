@@ -69,7 +69,37 @@ class CAgent(mesa.Agent):
         print(f"Buyer {self.unique_id} is shopping") 
 
         for seller in seller_candidate:
-            print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
+            buyer = self        # for better readability
+            
+            if seller.can_sell: 
+                payment = Payment(seller.MOP, buyer.MOP)
+                if payment.means_of_payment is None:
+                    payment.set_seen_means_of_payment_to([seller, buyer])
+                    continue
+                price = seller.offered_price
+                payment.pay(buyer, seller, price)
+                print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
+
+    @property
+    def can_sell(self):
+        return True
+
+    @property
+    def MOP(self) :
+        return self._MOP
+
+    @MOP.setter
+    def MOP(self, value):
+        self._MOP = value
+
+    
+    @property
+    def offered_price(self):
+        return self._offered_price 
+    
+    @offered_price.setter
+    def offered_price(self, value):
+        self._offered_price = value    
 
     
     @property
