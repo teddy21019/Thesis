@@ -9,6 +9,7 @@ logger = logging.getLogger('structure')
 
 if TYPE_CHECKING:
     from src.model import CModel
+    Number = int | float
 
 class AgentType(Enum):
     BUYER = auto()
@@ -74,15 +75,19 @@ class CAgent(mesa.Agent):
         for seller in seller_candidate:
             buyer = self        # for better readability
             
-            if seller.can_sell: 
-                payment = Payment(seller, buyer)
-                if payment.means_of_payment is None:
-                    payment.set_seen_means_of_payment_to([seller, buyer])
-                    continue
-                price = seller.offered_price
-                quantity = seller.offered_quantity
-                payment.pay(price, quantity)
-                print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
+            if not seller.can_sell:
+                continue
+            
+            payment = Payment(seller, buyer)
+            payment.set_seen_means_of_payment_to([seller, buyer])
+            
+            if payment.means_of_payment is None:
+                continue
+
+            price : Number      = seller.offered_price
+            quantity : Number   = seller.offered_quantity
+            payment.pay(price, quantity)
+            print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
 
     @property
     def can_sell(self):
@@ -119,7 +124,7 @@ class CAgent(mesa.Agent):
 
     
     @property
-    def offered_price(self):
+    def offered_price(self) -> :
         return self._offered_price 
     
     @offered_price.setter

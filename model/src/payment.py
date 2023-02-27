@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, ParamSpec, Protocol, TypeVar
 from enum import Enum, auto
 from dataclasses import dataclass
 
+Number = int | float
 
 class MOP_TYPE(Enum):
     H_CASH = 'H_Cash'
@@ -19,10 +20,10 @@ class Trader(Protocol):
     def set_seen(self, MOPS: set[MOP_TYPE])-> None:
         ... 
     
-    def change_in_MOP(self, mop: MOP_TYPE, price: float | int) -> None:
+    def change_in_MOP(self, mop: MOP_TYPE, price: Number) -> None:
         ...
 
-    def change_in_goods(self, item , quantity: float | int) -> None:
+    def change_in_goods(self, item , quantity: Number) -> None:
         ...
 
 class Payment:
@@ -63,7 +64,7 @@ class Payment:
             )
 
     
-    def pay(self, p, q):
+    def pay(self, p: Number, q: Number):
         if self.means_of_payment is None:
             raise InvalidTradingError("Trading fails but forced to trade")
 
