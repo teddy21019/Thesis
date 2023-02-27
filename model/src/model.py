@@ -19,18 +19,18 @@ if TYPE_CHECKING:
 
 class CModel(mesa.Model):
     def __init__(self,
-        N                       : int,
-        scheduler_constructor   : SchedulerConstructor,
-        ):
+                N                       : int,
+                scheduler_constructor   : SchedulerConstructor,
+            ):
         self.random: Random
         super().__init__()
-        self.scheduler = scheduler_constructor(self)
-        self.unique_id_generator = (i for i in range(100_00_00_00) )
+        self.scheduler              = scheduler_constructor(self)
+        self.unique_id_generator    = (i for i in range(100_00_00_00) )
         self._create_agents()
 
     
     def _create_agents(self):
-        logger.debug("Creating agents")
+        print("Creating agents")
         self._init_buyers()
         self._init_sellers()
     
