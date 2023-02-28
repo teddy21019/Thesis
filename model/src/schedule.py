@@ -7,18 +7,18 @@ from numpy import add
 
 from src.agent import AgentType
 
+from template.agent import TemplateAgent
+from template.schedule import TemplateScheduler
+
 import logging
 
 logger = logging.getLogger('structure')
 
 if TYPE_CHECKING:
-    from mesa import Model, Agent
-    from src.agent import CAgent, AgentType
-    from src.model import CModel
-    from src.schedule import CScheduler
+    from src.agent import TestAgent, AgentType
+    from src.model import TestModel
 
-    
-class CScheduler(BaseScheduler):
+class TestScheduler(TemplateScheduler):
     """
     The baseline scheduler that defines the basic structure of the model. 
 
@@ -33,12 +33,12 @@ class CScheduler(BaseScheduler):
     abstract class, for the sake of demonstration purposes. 
     """
 
-    def __init__(self, model: CModel) -> None:
+    def __init__(self, model: TestModel) -> None:
         super().__init__(model)
-        self._sellers: dict[int, CAgent] = dict()
-        self._buyers: dict[int, CAgent] = dict()
+        self._sellers: dict[int, TestAgent] = dict()
+        self._buyers: dict[int, TestAgent] = dict()
 
-    def add(self, agent:CAgent, type: AgentType):
+    def add(self, agent:TestAgent, type: AgentType):
         if type == AgentType.BUYER:
             self._add_buyer(agent)
             return 
@@ -50,26 +50,16 @@ class CScheduler(BaseScheduler):
 
 
     def step(self) -> None:
-        
-        procedure_list = [
-            self._consumption_decision_step,
-            self._consumption_bundling_step,
-            self._seller_summarize_step,
-            self._seller_buyer_toggle_step
-        ]
-        
-        for func in procedure_list:
-            add_separate_line(func)()
-        
+       super().step() 
     
-    def _add_buyer(self, agent: CAgent) -> None :
+    def _add_buyer(self, agent: TestAgent) -> None :
         agent_id = agent.unique_id
         if agent_id in self._buyers:
             raise RepeatAgentError(id = agent_id)
         self._buyers[agent_id] = agent
 
 
-    def _add_seller(self, agent: CAgent) -> None:
+    def _add_seller(self, agent: TestAgent) -> None:
         agent_id = agent.unique_id
         if agent_id in self._sellers:
             raise RepeatAgentError(id = agent_id)
@@ -83,17 +73,17 @@ class CScheduler(BaseScheduler):
     def buyers(self):
         return self._buyers
 
-    def seller_exists(self, seller:CAgent | int ):
-        from src.agent import CAgent
+    def seller_exists(self, seller:TestAgent | int ):
+        from src.agent import TestAgent
 
-        if isinstance(seller, CAgent):
+        if isinstance(seller, TestAgent):
             return seller.unique_id in self._sellers
         elif isinstance(seller, int):
             return seller in self._sellers
         raise ValueError("Agent type error!")
 
-    def buyer_exists(self, buyer:CAgent | int ):
-        if isinstance(buyer, CAgent):
+    def buyer_exists(self, buyer:TestAgent | int ):
+        if isinstance(buyer, TestAgent):
             return buyer.unique_id in self._buyers
         elif isinstance(buyer, int):
             return buyer in self._buyers
@@ -103,32 +93,23 @@ class CScheduler(BaseScheduler):
         
     def _consumption_decision_step(self) -> None:
         logger.debug("Consumption decision step")
-        
-        buyer_consumption_decision_order : Iterator[CAgent] = self._buyer_activation_order()
-        
-        for buyer in buyer_consumption_decision_order:
-            buyer.decide_consumption()
-        return
+        super()._consumption_bundling_step()
+
 
     def _consumption_bundling_step(self) -> None:
         logger.debug("Consumption bundling step")
-        buyer_shopping_order : Iterator[CAgent] = self._buyer_activation_order()
-
-        for buyer in buyer_shopping_order:
-            seller_candidate : Iterator[CAgent] = buyer.seller_candidate
-            buyer.shop(seller_candidate)
-        return
+        super()._consumption_bundling_step()
 
     def _seller_summarize_step(self) -> None:
         logger.debug("Seller summarization step")
-        return
+        super()._seller_summarize_step()
 
     def _seller_buyer_toggle_step(self) -> None:
         logger.debug("Seller buyer toggle step")
-        return
+        super()._seller_buyer_toggle_step()
 
 
-    def _buyer_activation_order(self) -> Iterator[CAgent]:
+    def _buyer_activation_order(self) -> Iterator[TestAgent]:
         random_generator: Random = self.model.random #type: ignore
         agent_buyer_keys = list( self._buyers.keys() )
         random_generator.shuffle(agent_buyer_keys)
@@ -138,12 +119,6 @@ class CScheduler(BaseScheduler):
                 yield self._buyers[key] 
 
 
-def add_separate_line(func: Callable, *args, **kargs) -> Callable:
-    def print_sep_after_func(*args, **kargs):
-        func(*args, **kargs)
-        print("====================")
-
-    return print_sep_after_func
 
 class AgentTypeException(Exception):
     def __init__(self,type,message):
