@@ -1,9 +1,9 @@
 from src.model import TestModel
-from src.schedule import TestScheduler 
+from src.schedule import TestScheduler
 """
 Logging configuration
 """
-import logging 
+import logging
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 logger = logging.getLogger('structure')
 logger.setLevel(logging.DEBUG)

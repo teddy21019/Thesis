@@ -22,12 +22,12 @@ class TemplateAgent(mesa.Agent, ABC):
         ...
     @abstractmethod
     def set_seen(self, MOPS: set[MOP_TYPE])-> None:
-        ... 
-    
+        ...
+
     @abstractmethod
     def change_in_MOP(self, mop: MOP_TYPE, price: Number) -> None:
         ...
-    
+
     @abstractmethod
     def change_in_goods(self, item , quantity: Number) -> None:
         ...
@@ -43,16 +43,16 @@ class TemplateAgent(mesa.Agent, ABC):
     @abstractmethod
     def seller_candidate(self) -> Iterator[Self]:
         ...
-    
+
     @abstractmethod
     def shop(self, seller_candidate : Iterator[Self]):
-        
+
         """
         For each seller in the list(generator)
         1. See if still affordable
         2. Check if still have inventory
-        3. Decide means of payment to use 
-        4. Announce the payment information 
+        3. Decide means of payment to use
+        4. Announce the payment information
         5. Finish the procedure
 
         The buyer stops when it has no more budget or it ran out of candidate
@@ -60,13 +60,13 @@ class TemplateAgent(mesa.Agent, ABC):
         """
         for seller in seller_candidate:
             buyer = self        # for better readability
-            
+
             if not seller.can_sell:
                 continue
-            
+
             payment = Payment(seller, buyer)
             payment.set_seen_means_of_payment_to([seller, buyer])
-            
+
             if payment.means_of_payment is None:
                 continue
 
@@ -74,7 +74,7 @@ class TemplateAgent(mesa.Agent, ABC):
             quantity : Number   = seller.offered_quantity
             payment.pay(price, quantity)
             print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
-    
+
     @property
     @abstractmethod
     def can_sell(self) -> bool:

@@ -15,7 +15,7 @@ class AgentType(Enum):
     BUYER = auto()
     SELLER = auto()
 
-    
+
 
 
 class TestAgent(TemplateAgent):
@@ -27,17 +27,17 @@ class TestAgent(TemplateAgent):
         self.type : AgentType = type
 
         # holding of assets
-        self._MOP : dict[MOP_TYPE, float] = dict() 
-        
+        self._MOP : dict[MOP_TYPE, float] = dict()
+
     def decide_consumption(self, *args, **kargs) -> float:
         print(f"Deciding consumptions for buyer {self.unique_id}")
         budget = self.y * 0.5
-        return budget 
+        return budget
 
     @property
     def seller_candidate(self) -> Iterator[Self]:
         """
-        Decides the candidate this buyer will want to buy from. 
+        Decides the candidate this buyer will want to buy from.
 
         Return
         ====
@@ -50,7 +50,7 @@ class TestAgent(TemplateAgent):
         all_seller_ids = list(
                 all_sellers.keys()
         )
-        
+
         random_shuffler = self.model.random.shuffle
 
         random_shuffler(all_seller_ids)
@@ -60,9 +60,9 @@ class TestAgent(TemplateAgent):
         for seller_id in all_seller_ids:
             if self.__scheduler.seller_exists(seller_id):
                 yield all_sellers[seller_id]
-    
+
     def shop(self, seller_candidate : Iterator[Self]):
-        print(f"Buyer {self.unique_id} is shopping") 
+        print(f"Buyer {self.unique_id} is shopping")
         super().shop(seller_candidate)
 
     @property
@@ -73,16 +73,16 @@ class TestAgent(TemplateAgent):
     def set_seen(self, MOPS: set[MOP_TYPE])-> None:
         """
         Called by payment system/ network system. Protocol for other classes
-        to inform this agent of an unseen means of payment 
+        to inform this agent of an unseen means of payment
         """
         for mop in MOPS:
             if mop not in self._MOP:
-                self.see(mop) 
-    
+                self.see(mop)
+
     def see(self, mop: MOP_TYPE):
         """ Handles what an agent should do when saw a new means of payments"""
         print(f"Agent {self.unique_id} now saw {mop}")
-    
+
     def change_in_MOP(self, mop: MOP_TYPE, price: float | int) -> None:
         self._MOP[mop]  = self._MOP[mop] + price
 
@@ -98,19 +98,19 @@ class TestAgent(TemplateAgent):
     def MOP(self, value):
         self._MOP = value
 
-    
+
     @property
     def offered_price(self) :
-        return self._offered_price 
-    
+        return self._offered_price
+
     @offered_price.setter
     def offered_price(self, value):
-        self._offered_price = value    
+        self._offered_price = value
 
     @property
     def offered_quantity(self):
         return 1
 
     @property
-    def __scheduler(self): 
+    def __scheduler(self):
         return self.model.scheduler

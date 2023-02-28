@@ -9,22 +9,22 @@ if TYPE_CHECKING:
 class TemplateScheduler(BaseScheduler, ABC):
 
     def step(self) -> None:
-        
+
         procedure_list = [
             self._consumption_decision_step,
             self._consumption_bundling_step,
             self._seller_summarize_step,
             self._seller_buyer_toggle_step
         ]
-        
+
         for func in procedure_list:
             add_separate_line(func)()
 
-    
-        
+
+
     def _consumption_decision_step(self) -> None:
         buyer_consumption_decision_order : Iterator[TemplateAgent] = self._buyer_activation_order()
-        
+
         for buyer in buyer_consumption_decision_order:
             buyer.decide_consumption()
         return
@@ -44,7 +44,7 @@ class TemplateScheduler(BaseScheduler, ABC):
     def _seller_buyer_toggle_step(self) -> None:
         ...
 
-    @abstractmethod 
+    @abstractmethod
     def _buyer_activation_order(self) -> Iterator[TemplateAgent]:
         ...
 

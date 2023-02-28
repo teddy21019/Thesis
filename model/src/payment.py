@@ -12,14 +12,14 @@ class MOP_TYPE(Enum):
 
 
 class Trader(Protocol):
-    
+
     @property
     def MOP(self) -> list[MOP_TYPE]:
         ...
 
     def set_seen(self, MOPS: set[MOP_TYPE])-> None:
-        ... 
-    
+        ...
+
     def change_in_MOP(self, mop: MOP_TYPE, price: Number) -> None:
         ...
 
@@ -38,10 +38,10 @@ class Payment:
 
 
         self.seller_mops = set(seller.MOP)
-        self.buyer_mops = set(buyer.MOP) 
+        self.buyer_mops = set(buyer.MOP)
 
         self.__means_of_payment = self.decide_means_of_payment()
-    
+
     def decide_means_of_payment(self) -> MOP_TYPE | None:
 
         mop_in_common = list(self.seller_mops & self.buyer_mops)
@@ -50,12 +50,12 @@ class Payment:
             return None
 
         return self.__random.choice(mop_in_common)
-    
+
     @property
     def means_of_payment(self) -> MOP_TYPE | None:
-       return self.__means_of_payment 
+       return self.__means_of_payment
 
-    
+
 
     def set_seen_means_of_payment_to(self, list_of_traders: list[Trader]) -> None:
         for trader in list_of_traders:
@@ -63,7 +63,7 @@ class Payment:
                 self.seller_mops | self.buyer_mops
             )
 
-    
+
     def pay(self, p: Number, q: Number):
         if self.means_of_payment is None:
             raise InvalidTradingError("Trading fails but forced to trade")

@@ -20,17 +20,17 @@ if TYPE_CHECKING:
 
 class TestScheduler(TemplateScheduler):
     """
-    The baseline scheduler that defines the basic structure of the model. 
+    The baseline scheduler that defines the basic structure of the model.
 
 
-    A scheduler consists of 
+    A scheduler consists of
     - the tick, or the time index of the model
-    - the template for the agent activation 
-    
+    - the template for the agent activation
+
     Extension
     =====
     This class is meant to be extended, but I am not designing this as an
-    abstract class, for the sake of demonstration purposes. 
+    abstract class, for the sake of demonstration purposes.
     """
 
     def __init__(self, model: TestModel) -> None:
@@ -41,17 +41,17 @@ class TestScheduler(TemplateScheduler):
     def add(self, agent:TestAgent, type: AgentType):
         if type == AgentType.BUYER:
             self._add_buyer(agent)
-            return 
+            return
         if type == AgentType.SELLER:
             self._add_seller(agent)
             return
-        
-        raise AgentTypeException(type, f"No such type as {type} exist") 
+
+        raise AgentTypeException(type, f"No such type as {type} exist")
 
 
     def step(self) -> None:
-       super().step() 
-    
+       super().step()
+
     def _add_buyer(self, agent: TestAgent) -> None :
         agent_id = agent.unique_id
         if agent_id in self._buyers:
@@ -68,7 +68,7 @@ class TestScheduler(TemplateScheduler):
     @property
     def sellers(self):
         return self._sellers
-    
+
     @property
     def buyers(self):
         return self._buyers
@@ -89,8 +89,8 @@ class TestScheduler(TemplateScheduler):
             return buyer in self._buyers
         raise ValueError("Agent type error!")
 
-    
-        
+
+
     def _consumption_decision_step(self) -> None:
         logger.debug("Consumption decision step")
         super()._consumption_bundling_step()
@@ -116,7 +116,7 @@ class TestScheduler(TemplateScheduler):
 
         for key in agent_buyer_keys:
             if key in self._buyers:
-                yield self._buyers[key] 
+                yield self._buyers[key]
 
 
 
