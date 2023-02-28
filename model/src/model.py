@@ -2,8 +2,8 @@ from __future__ import annotations
 from random import Random
 import mesa
 import mesa.time
-from src.agent import CAgent, AgentType
-from src.schedule import CScheduler
+from src.agent import TestAgent, AgentType
+from src.schedule import TestScheduler
 
 import logging
 logger = logging.getLogger('structure')
@@ -14,10 +14,10 @@ from typing import (
     )
 
 if TYPE_CHECKING:
-    SchedulerConstructor =  Type[CScheduler]
+    SchedulerConstructor =  Type[TestScheduler] 
 
 
-class CModel(mesa.Model):
+class TestModel(mesa.Model):
     def __init__(self,
                 N                       : int,
                 scheduler_constructor   : SchedulerConstructor,
@@ -37,7 +37,7 @@ class CModel(mesa.Model):
     def _init_buyers(self):
         for i in range(2):
             self.scheduler.add(
-                CAgent(
+                TestAgent(
                     id = next(self.unique_id_generator),
                     model=self,
                     type = AgentType.BUYER
@@ -48,7 +48,7 @@ class CModel(mesa.Model):
     def _init_sellers(self):
         for i in range(2):
             self.scheduler.add(
-                CAgent(
+                TestAgent(
                     id = next(self.unique_id_generator),
                     model=self,
                     type = AgentType.SELLER
