@@ -1,24 +1,27 @@
 from __future__ import annotations
-import mesa
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING, Iterator, Self
 from enum import Enum, auto
 from src.payment import Payment, MOP_TYPE
+from template.agent import TemplateAgent
 
 import logging
 logger = logging.getLogger('structure')
 
 if TYPE_CHECKING:
-    from src.model import CModel
+    from src.model import TestModel
     Number = int | float
 
 class AgentType(Enum):
     BUYER = auto()
     SELLER = auto()
 
-class CAgent(mesa.Agent):
+    
 
-    def __init__(self, id:int, model: CModel, type: AgentType):
-        self.model: CModel
+
+class TestAgent(TemplateAgent):
+
+    def __init__(self, id:int, model: TestModel, type: AgentType):
+        self.model: TestModel
         super().__init__(id, model)
         self.y = 10 # need change
         self.type : AgentType = type
@@ -32,7 +35,7 @@ class CAgent(mesa.Agent):
         return budget 
 
     @property
-    def seller_candidate(self) -> Iterator[CAgent]:
+    def seller_candidate(self) -> Iterator[Self]:
         """
         Decides the candidate this buyer will want to buy from. 
 
@@ -43,7 +46,7 @@ class CAgent(mesa.Agent):
         cause the agent to not be found
         """
 
-        all_sellers : dict[int, CAgent] = self.__scheduler.sellers
+        all_sellers : dict[int, Self] = self.__scheduler.sellers
         all_seller_ids = list(
                 all_sellers.keys()
         )
@@ -58,36 +61,9 @@ class CAgent(mesa.Agent):
             if self.__scheduler.seller_exists(seller_id):
                 yield all_sellers[seller_id]
     
-    def shop(self, seller_candidate : Iterator[CAgent]):
-        """
-        For each seller in the list(generator)
-        1. See if still affordable
-        2. Check if still have inventory
-        3. Decide means of payment to use 
-        4. Announce the payment information 
-        5. Finish the procedure
-
-        The buyer stops when it has no more budget or it ran out of candidate
-        that can have a successful trade with
-        """
+    def shop(self, seller_candidate : Iterator[Self]):
         print(f"Buyer {self.unique_id} is shopping") 
-
-        for seller in seller_candidate:
-            buyer = self        # for better readability
-            
-            if not seller.can_sell:
-                continue
-            
-            payment = Payment(seller, buyer)
-            payment.set_seen_means_of_payment_to([seller, buyer])
-            
-            if payment.means_of_payment is None:
-                continue
-
-            price : Number      = seller.offered_price
-            quantity : Number   = seller.offered_quantity
-            payment.pay(price, quantity)
-            print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
+        super().shop(seller_candidate)
 
     @property
     def can_sell(self):
@@ -124,7 +100,7 @@ class CAgent(mesa.Agent):
 
     
     @property
-    def offered_price(self) -> :
+    def offered_price(self) :
         return self._offered_price 
     
     @offered_price.setter
