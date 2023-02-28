@@ -38,7 +38,11 @@ class TemplateScheduler(BaseScheduler, ABC):
         return
 
     def _seller_summarize_step(self) -> None:
-        ...
+        seller_order : Iterator[TemplateAgent] = self._seller_activation_order()
+
+        for seller in seller_order:
+            seller.respond_selling_strategy()
+
 
 
     def _seller_buyer_toggle_step(self) -> None:
@@ -46,6 +50,10 @@ class TemplateScheduler(BaseScheduler, ABC):
 
     @abstractmethod
     def _buyer_activation_order(self) -> Iterator[TemplateAgent]:
+        ...
+
+    @abstractmethod
+    def _seller_activation_order(self) -> Iterator[TemplateAgent]:
         ...
 
 
