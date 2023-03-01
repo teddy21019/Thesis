@@ -34,7 +34,7 @@ class TemplateAgent(mesa.Agent, ABC):
         ...
 
     """
-        To match the schedule
+        Buyers --- To match the schedule
     """
     @abstractmethod
     def decide_consumption(self):
@@ -80,6 +80,11 @@ class TemplateAgent(mesa.Agent, ABC):
                 'receiver': seller.unique_id
             })
 
+
+    """"
+        Sellers --- To match the schedule
+    """
+
     @property
     @abstractmethod
     def can_sell(self) -> bool:
@@ -93,4 +98,22 @@ class TemplateAgent(mesa.Agent, ABC):
     @property
     @abstractmethod
     def offered_quantity(self) -> Number:
+        ...
+
+    def respond_selling_strategy(self):
+        self.adjust_receive_MOP_as_seller()
+        self.adjust_offered_price()
+        self.adjust_production()
+
+
+    @abstractmethod
+    def adjust_receive_MOP_as_seller(self):
+        ...
+
+    @abstractmethod
+    def adjust_offered_price(self):
+        ...
+
+    @abstractmethod
+    def adjust_production(self):
         ...

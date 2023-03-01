@@ -92,6 +92,15 @@ class TestAgent(TemplateAgent):
     def change_in_goods(self, item , quantity: float | int) -> None:
         pass
 
+    def adjust_receive_MOP_as_seller(self):
+        print(f"Agent {self.unique_id} adjusting means of payment accepted")
+
+    def adjust_offered_price(self):
+        print(f"Agent {self.unique_id} adjusting offered price")
+
+
+    def adjust_production(self):
+        print(f"Agent {self.unique_id} adjusting production")
 
     @property
     def MOP(self) :

@@ -119,6 +119,14 @@ class TestScheduler(TemplateScheduler):
             if key in self._buyers:
                 yield self._buyers[key]
 
+    def _seller_activation_order(self) -> Iterator[TestAgent]:
+        random_generator: Random = self.model.random #type: ignore
+        agent_seller_keys = list( self._sellers.keys() )
+        random_generator.shuffle(agent_seller_keys)
+
+        for key in agent_seller_keys:
+            if key in self._sellers:
+                yield self._sellers[key]
 
 
 class AgentTypeException(Exception):
