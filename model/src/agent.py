@@ -20,14 +20,17 @@ class AgentType(Enum):
 
 class TestAgent(TemplateAgent):
 
-    def __init__(self, id:int, model: TestModel, type: AgentType):
+    def __init__(self, id:int, model: TestModel, type: AgentType, MOP: None | dict[MOP_TYPE, float]):
         self.model: TestModel
         super().__init__(id, model)
         self.y = 10 # need change
         self.type : AgentType = type
-
+        self._offered_price = 0
         # holding of assets
-        self._MOP : dict[MOP_TYPE, float] = dict()
+        if MOP is None:
+            self._MOP : dict[MOP_TYPE, float] = {MOP_TYPE.H_CASH:0}
+        else:
+            self._MOP : dict[MOP_TYPE, float] = MOP
 
     def decide_consumption(self, *args, **kargs) -> float:
         print(f"Deciding consumptions for buyer {self.unique_id}")

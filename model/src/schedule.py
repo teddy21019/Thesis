@@ -38,15 +38,16 @@ class TestScheduler(TemplateScheduler):
         self._sellers: dict[int, TestAgent] = dict()
         self._buyers: dict[int, TestAgent] = dict()
 
-    def add(self, agent:TestAgent, type: AgentType):
-        if type == AgentType.BUYER:
+    def add(self, agent:TestAgent):
+        atype = agent.type
+        if atype == AgentType.BUYER:
             self._add_buyer(agent)
             return
-        if type == AgentType.SELLER:
+        if atype == AgentType.SELLER:
             self._add_seller(agent)
             return
 
-        raise AgentTypeException(type, f"No such type as {type} exist")
+        raise AgentTypeException(atype, f"No such type as {atype} exist")
 
 
     def step(self) -> None:
