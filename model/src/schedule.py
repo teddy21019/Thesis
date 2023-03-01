@@ -94,7 +94,7 @@ class TestScheduler(TemplateScheduler):
 
     def _consumption_decision_step(self) -> None:
         logger.debug("Consumption decision step")
-        super()._consumption_bundling_step()
+        super()._consumption_decision_step()
 
 
     def _consumption_bundling_step(self) -> None:

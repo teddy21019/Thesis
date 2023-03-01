@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 import mesa
 from src.payment import MOP_TYPE, Payment
+from src.broadcast import announce
 from typing import TYPE_CHECKING, Callable, Iterator, Self
 
 if TYPE_CHECKING:
@@ -72,8 +73,12 @@ class TemplateAgent(mesa.Agent, ABC):
 
             price : Number      = seller.offered_price
             quantity : Number   = seller.offered_quantity
-            payment.pay(price, quantity)
             print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
+            payment.pay(price, quantity)
+            announce(MOP_TYPE.H_CASH.value , {
+                'sender': buyer.unique_id,
+                'receiver': seller.unique_id
+            })
 
     @property
     @abstractmethod

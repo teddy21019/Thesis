@@ -31,6 +31,8 @@ class Payment:
         self.__seller = seller
         self.__buyer = buyer
         self.__item = item
+        self._p = None
+        self._q = None
         if random is None:
             self.__random = Random()
         else:
@@ -67,6 +69,8 @@ class Payment:
     def pay(self, p: Number, q: Number):
         if self.means_of_payment is None:
             raise InvalidTradingError("Trading fails but forced to trade")
+        self._p = p
+        self._q = q
 
         self.__seller.change_in_MOP(self.means_of_payment, p)
         self.__buyer.change_in_MOP(self.means_of_payment, -p)
@@ -74,6 +78,13 @@ class Payment:
         self.__seller.change_in_goods(self.__item, -q)
         self.__buyer.change_in_goods(self.__item, q)
 
+    @property
+    def p(self):
+        return self._p
+
+    @property
+    def q(self):
+        return self._q
 
 class InvalidTradingError(ValueError):
     def __init__(self, message) -> None:

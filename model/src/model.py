@@ -5,6 +5,8 @@ import mesa.time
 from src.agent import TestAgent, AgentType
 from src.schedule import TestScheduler
 from src.payment import MOP_TYPE
+from src.broadcast import subscribe
+from src.bank import TestBank
 
 import logging
 logger = logging.getLogger('structure')
@@ -28,7 +30,9 @@ class TestModel(mesa.Model):
         self.scheduler              = scheduler_constructor(self)
         self.agent_constructor = TestAgent
         self.unique_id_generator    = (i for i in range(100_00_00_00) )
+        self._bank = TestBank()
         self._create_agents()
+        self._register_listeners()
 
 
     def _create_agents(self):
@@ -61,6 +65,9 @@ class TestModel(mesa.Model):
             MOP = mop_holding
         )
         return agent
+
+    def _register_listeners(self):
+        subscribe(MOP_TYPE.H_CASH.value, self._bank.bank_handle_payment_callback_fn)
 
     def step(self):
         self.scheduler.step()
