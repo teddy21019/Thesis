@@ -17,5 +17,5 @@ class TestBank(Bank):
 
     def bank_handle_payment_callback_fn(self, data):
         print(
-            f'\t Agent {data["sender"]} pays agent {data["receiver"]} some money in the bank'
+            f'\t Agent {data["sender"]} pays agent {data["receiver"]} ${data["amount"]} in the bank'
         )

@@ -25,7 +25,7 @@ class TestAgent(TemplateAgent):
         super().__init__(id, model)
         self.y = 10 # need change
         self.type : AgentType = type
-        self._offered_price = 0
+        self._offered_price = 1
         # holding of assets
         if MOP is None:
             self._MOP : dict[MOP_TYPE, float] = {MOP_TYPE.H_CASH:0}

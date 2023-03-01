@@ -77,7 +77,8 @@ class TemplateAgent(mesa.Agent, ABC):
             payment.pay(price, quantity)
             announce(payment.means_of_payment.value , {
                 'sender': buyer.unique_id,
-                'receiver': seller.unique_id
+                'receiver': seller.unique_id,
+                'amount': payment.p,
             })
 
 
