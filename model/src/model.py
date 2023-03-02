@@ -1,5 +1,6 @@
 from __future__ import annotations
 from random import Random
+from itertools import count
 import mesa
 import mesa.time
 from src.agent import TestAgent, AgentType
@@ -29,7 +30,7 @@ class TestModel(mesa.Model):
         super().__init__()
         self.scheduler              = scheduler_constructor(self)
         self.agent_constructor = TestAgent
-        self.unique_id_generator    = (i for i in range(100_00_00_00) )
+        self.unique_id_generator    = count()
         self._bank = TestBank()
         self._create_agents()
         self._register_listeners()
