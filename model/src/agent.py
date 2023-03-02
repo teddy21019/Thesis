@@ -24,6 +24,7 @@ class TestAgent(TemplateAgent):
         self.model: TestModel
         super().__init__(id, model)
         self.y = 10 # need change
+        self._budget = 0
         self.type : AgentType = type
         self._offered_price = 1
         # holding of assets
@@ -34,8 +35,8 @@ class TestAgent(TemplateAgent):
 
     def decide_consumption(self, *args, **kargs) -> float:
         print(f"Deciding consumptions for buyer {self.unique_id}")
-        budget = self.y * 0.5
-        return budget
+        self._budget = self.y * 0.5
+        return self._budget
 
     @property
     def seller_candidate(self) -> Iterator[Self]:
@@ -69,6 +70,9 @@ class TestAgent(TemplateAgent):
         super().shop(seller_candidate)
 
     @property
+    def can_buy(self) -> bool:
+        return self._budget > 0
+    @property
     def can_sell(self):
         return True
 
@@ -88,6 +92,8 @@ class TestAgent(TemplateAgent):
 
     def change_in_MOP(self, mop: MOP_TYPE, price: float | int) -> None:
         self._MOP[mop]  = self._MOP[mop] + price
+        self._budget += self.model.MOP_to_real_value(mop, price)
+        print(f"\t Agent {self.unique_id} still can spend {self._budget}")
 
     def change_in_goods(self, item , quantity: float | int) -> None:
         pass

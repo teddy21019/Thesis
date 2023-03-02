@@ -10,7 +10,6 @@ class MOP_TYPE(Enum):
     F_CBDC = 'F_CBDC'
     DEPOSIT = 'Deposit'
 
-
 class Trader(Protocol):
 
     @property

@@ -62,6 +62,9 @@ class TemplateAgent(mesa.Agent, ABC):
         for seller in seller_candidate:
             buyer = self        # for better readability
 
+            if not buyer.can_buy:
+                break
+
             if not seller.can_sell:
                 continue
 
@@ -81,6 +84,11 @@ class TemplateAgent(mesa.Agent, ABC):
                 'amount': payment.p,
             })
 
+
+    @property
+    @abstractmethod
+    def can_buy(self) -> bool:
+        ...
 
     """"
         Sellers --- To match the schedule

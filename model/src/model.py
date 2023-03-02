@@ -69,5 +69,8 @@ class TestModel(mesa.Model):
     def _register_listeners(self):
         subscribe(MOP_TYPE.H_CASH.value, self._bank.bank_handle_payment_callback_fn)
 
+    def MOP_to_real_value(self, mop:MOP_TYPE, value:float):
+        return value
+
     def step(self):
         self.scheduler.step()
