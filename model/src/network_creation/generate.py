@@ -104,7 +104,7 @@ def generate_bipartite_edge_to_combine(node_degree_dict_1:dict[Hashable, int],
     return b1_permute_agent_list, s2_permute_agent_list
 
 def generate_cross_broader_bipartite(graph1: nx.Graph, graph2: nx.Graph, international_level:float = 0.5) -> \
-    tuple[list[int], list[int], list[int], list[int], nx.Graph]:
+    tuple[list[list[int]], nx.Graph]:
     """
     Given two graphs of country-side buyer-seller networks, generate a cross-broader
     transaction network.
@@ -151,7 +151,7 @@ def generate_cross_broader_bipartite(graph1: nx.Graph, graph2: nx.Graph, interna
         b2_permute_agent_list, s1_permute_agent_list
     ))
 
-    return country_1_buyers, country_1_sellers, country_2_buyers, country_2_sellers, combined
+    return [country_1_buyers, country_1_sellers, country_2_buyers, country_2_sellers], combined
 
 
     ## match 1s 2b
@@ -160,6 +160,8 @@ def generate_cross_broader_bipartite(graph1: nx.Graph, graph2: nx.Graph, interna
 
 
 if __name__ == '__main__':
+
+    with_label_param = True
 
     node_n = 30
     avg_edge = 5
@@ -176,9 +178,12 @@ if __name__ == '__main__':
     id_generator = count()
     node_1, G1 = edge_distribution_to_bipartite_network(edges[0], edges[1], ("buyer", "seller"), id_generator)
     node_2, G2 = edge_distribution_to_bipartite_network(edges[2], edges[3], ("buyer", "seller"), id_generator)
-    pos1 = nx.bipartite_layout(G1, set(G1.nodes) - set(node_1))
-    pos2 = nx.bipartite_layout(G2, set(G2.nodes) - set(node_2))
-    fig, axs = plt.subplots(1,3)
+    pos1 = nx.bipartite_layout(G1, set(G1.nodes) - set(node_1), scale = 2)
+    pos2 = nx.bipartite_layout(G2, set(G2.nodes) - set(node_2), scale = 2)
+
+
+    fig, axs = plt.subplots(1,4, figsize=(10,5))
+    fig.tight_layout()
     nx.draw(
         G1,
         ax = axs[0],
@@ -186,7 +191,7 @@ if __name__ == '__main__':
         node_color = ['r'] * node_n + ['b'] * node_n,
         alpha = 0.5,
         node_size =[ deg * 40 for deg in dict(G1.degree).values()],
-        with_labels = True,
+        with_labels = with_label_param,
     )
 
     nx.draw(
@@ -196,22 +201,37 @@ if __name__ == '__main__':
         node_color = ['r'] * len(node_2) + ['b'] * len(node_2),
         alpha = 0.5,
         node_size =[ deg * 40 for deg in dict(G2.degree).values()],
-        with_labels = True,
+        with_labels = with_label_param,
     )
 
-    *node_refs, combined = generate_cross_broader_bipartite(G1, G2, international_level=0.2)
+    node_refs, combined = generate_cross_broader_bipartite(G1, G2, international_level=0.2)
 
     buyer1_and_seller_2 = (set(node_refs[0]) | set(node_refs[3]))
-    view_two_country = nx.subgraph_view(combined, filter_node= lambda n: n in buyer1_and_seller_2)
+    buyer2_and_seller_1 = (set(node_refs[1]) | set(node_refs[2]))
+    view_two_country_1 = nx.subgraph_view(combined, filter_node= lambda n: n in buyer1_and_seller_2)
+    view_two_country_2 = nx.subgraph_view(combined, filter_node= lambda n: n in buyer2_and_seller_1)
 
-    pos_b1s2 = nx.bipartite_layout(view_two_country, node_refs[0])
-    colors = ['r'] * 30 + ['b'] * 15
+    pos_b1s2 = nx.bipartite_layout(view_two_country_1, node_refs[0], scale = 2)
+    pos_b2s1 = nx.bipartite_layout(view_two_country_2, node_refs[2], scale = 2)
+    colors_1 = ['r'] * 30 + ['b'] * 15
+    colors_2 = ['b'] * 30 + ['r'] * 15
     nx.draw(
-        view_two_country,
+        view_two_country_1,
         ax = axs[1],
         pos=pos_b1s2,
-        node_color = colors,
+        node_color = colors_1,
         alpha = 0.5,
-        node_size =[ deg * 60 for deg in dict(view_two_country.degree).values()],
-        with_labels = True)
+        node_size =[ deg * 60 for deg in dict(view_two_country_1.degree).values()],
+        with_labels = with_label_param)
+    
+    nx.draw(
+        view_two_country_2,
+        ax = axs[3],
+        pos=pos_b2s1,
+        node_color = colors_2,
+        alpha = 0.5,
+        node_size =[ deg * 60 for deg in dict(view_two_country_2.degree).values()],
+        with_labels = with_label_param,
+    )
+
     plt.show()
