@@ -6,7 +6,7 @@ import mesa.time
 import networkx as nx
 from src.agent import TestAgent, AgentType
 from src.schedule import TestScheduler
-from src.payment import MeansOfPaymentType , get_init_mop_from_country
+from src.payment import MeansOfPaymentType
 from src.broadcast import subscribe
 from src.bank import TestBank
 
