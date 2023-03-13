@@ -4,7 +4,7 @@ from itertools import count
 import mesa
 import mesa.time
 import networkx as nx
-from src.agent import TestAgent, AgentType
+from src.agent import TestAgent, AgentType, ThesisAgent
 from src.schedule import TestScheduler
 from src.payment import MeansOfPaymentType
 from src.broadcast import subscribe
@@ -91,9 +91,17 @@ class ThesisModel(TestModel):
         self.random: Random
         super(mesa.Model, self).__init__()
         self.scheduler              = scheduler_constructor(self)
-        self.agent_constructor = TestAgent
+        self.agent_constructor = ThesisAgent
         self._trading_network = cross_border_payment_network
-        self._bank = TestBank()
+
+        # configs for model
+        self.init_mops = {
+            mop_name    : MeansOfPaymentType(mop_name)
+            for mop_name in ['H_Cash', 'H_Deposit', 'F_Cash', 'F_Deposit']
+        }
+        self._country_H_init_mop = (self.init_mops['H_Cash'], self.init_mops['H_Deposit'])
+        self._country_F_init_mop = (self.init_mops['H_Cash'], self.init_mops['H_Deposit'])
+
         self._create_agents()
         self._register_listeners()
 
@@ -113,9 +121,10 @@ class ThesisModel(TestModel):
         consider directional graph)
         """
         all_agents = self._trading_network.nodes(data=True)
-        self._init_buyers(buyer_dict = {
+        init_buyer_dict: dict[int, dict] = dict({
             node_id:data for node_id, data in all_agents if data['bipartite'] == 'buyer'
             })
+        self._init_buyers(buyer_dict = init_buyer_dict)
 
         self._init_sellers(seller_dict = {
             node_id:data for node_id, data in all_agents if data['bipartite'] == 'seller'
@@ -124,15 +133,16 @@ class ThesisModel(TestModel):
         self._connect_trading_network_edges()
 
     def _init_buyers(self, buyer_dict: dict[int, dict]):
-        
+
         for b_id, d_data in buyer_dict.items():
             country :str = d_data['country']
-            init_mop = get_init_mop_from_country(country)
+            init_mops = self._country_H_init_mop if country == 'home' else self._country_F_init_mop
             new_agent = self.agent_constructor(
                 id          = b_id,
                 model       = self,
+                country     = country,
                 type        = AgentType.BUYER,
-                MOP         = init_mop
+                MOP         = {mop:10.0 for mop in init_mops}
             )
 
             self.scheduler.add(
@@ -140,42 +150,21 @@ class ThesisModel(TestModel):
             )
 
     def _init_sellers(self, seller_dict: dict[int, dict]):
-        
+
         for s_id, d_data in seller_dict.items():
             country :str = d_data['country']
-            init_mop = get_init_mop_from_country(country)
+            init_mops = self._country_H_init_mop if country == 'home' else self._country_F_init_mop
             new_agent = self.agent_constructor(
                 id          = s_id,
                 model       = self,
-                type        = AgentType.SELLER,
-                MOP         = init_mop
+                country     = country,
+                type        = AgentType.BUYER,
+                MOP         = {mop:10.0 for mop in init_mops }
             )
 
             self.scheduler.add(
                 new_agent,
             )
-    def _init_sellers(self, seller_dict):
-        for i in range(2):
-            new_agent = self._init_agent(AgentType.SELLER, {MOP_TYPE.H_CASH:10})
-            self.scheduler.add(
-                new_agent,
-            )
-
-    def _init_agent(self,
-                    id: int,
-                    country: str,
-                    type: AgentType,
-                    mop_holding:dict[MOP_TYPE, float]
-                    ):
-        agent = self.agent_constructor(
-            id = id,
-            country = country,
-            model = self,
-            type = type,
-            MOP = mop_holding
-        )
-        return agent
-
 
     def _register_listeners(self):
         subscribe(MOP_TYPE.H_CASH.value, self._bank.bank_handle_payment_callback_fn)
