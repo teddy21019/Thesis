@@ -6,21 +6,6 @@ from .mop import MeansOfPaymentType as MOP_TYPE
 
 Number = int | float
 
-# class MOP_TYPE(Enum):
-#     H_CASH = 'H_Cash'
-#     F_CASH = 'F_Cash'
-#     F_CBDC = 'F_CBDC'
-#     DEPOSIT = 'Deposit'
-
-def get_init_mop_from_country(country: str):
-    return None
-#     country_mop_map = {
-#         'home'      : [ MOP_TYPE.H_CASH, MOP_TYPE.DEPOSIT ],
-#         'foreign'   : [ MOP_TYPE.F_CASH, MOP_TYPE.DEPOSIT ]
-#     }
-
-    # return country_mop_map[country]
-
 class Trader(Protocol):
 
     @property
