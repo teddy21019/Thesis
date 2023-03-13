@@ -42,7 +42,8 @@ def edge_distribution_to_bipartite_network(
     edges1: np.ndarray,
     edges2: np.ndarray,
     bipartite_name: tuple[Hashable, Hashable],
-    id_generator: Iterator):
+    id_generator: Iterator,
+    **kwargs):
     """
     Converts edge distribution of a bipartite network to a bipartite network graph.
 
@@ -67,8 +68,8 @@ def edge_distribution_to_bipartite_network(
     random.shuffle(bipartite_2_agent_count_list)
 
     G = nx.Graph()
-    G.add_nodes_from(set(bipartite_1_agent_count_list), bipartite = bipartite_name[0])
-    G.add_nodes_from(set(bipartite_2_agent_count_list), bipartite = bipartite_name[1])
+    G.add_nodes_from(set(bipartite_1_agent_count_list), bipartite = bipartite_name[0], **kwargs)
+    G.add_nodes_from(set(bipartite_2_agent_count_list), bipartite = bipartite_name[1], **kwargs)
 
     G.add_edges_from(zip(bipartite_1_agent_count_list, bipartite_2_agent_count_list))
 
@@ -176,8 +177,8 @@ if __name__ == '__main__':
         get_probability_array_for_agents( int( node_n * population[i]), distribution_function)))
 
     id_generator = count()
-    node_1, G1 = edge_distribution_to_bipartite_network(edges[0], edges[1], ("buyer", "seller"), id_generator)
-    node_2, G2 = edge_distribution_to_bipartite_network(edges[2], edges[3], ("buyer", "seller"), id_generator)
+    node_1, G1 = edge_distribution_to_bipartite_network(edges[0], edges[1], ("buyer", "seller"), id_generator, country = "home")
+    node_2, G2 = edge_distribution_to_bipartite_network(edges[2], edges[3], ("buyer", "seller"), id_generator, country = "foreign")
     pos1 = nx.bipartite_layout(G1, set(G1.nodes) - set(node_1), scale = 2)
     pos2 = nx.bipartite_layout(G2, set(G2.nodes) - set(node_2), scale = 2)
 

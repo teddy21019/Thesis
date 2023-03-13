@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger('structure')
 
 if TYPE_CHECKING:
-    from src.model import TestModel
+    from src.model import TestModel, ThesisModel
     Number = int | float
 
 class AgentType(Enum):
@@ -134,7 +134,7 @@ class TestAgent(TemplateAgent):
 
 class ThesisAgent(TemplateAgent):
     """
-    Agent that has 
+    Agent that has
     - Country
     - Action Type
     - Means of Payment
@@ -142,12 +142,12 @@ class ThesisAgent(TemplateAgent):
 
     def __init__(self,
                  id:int,
-                 model: TestModel,
+                 model: ThesisModel,
                  type: AgentType,
                  country: str,
                  MOP: None | dict[ MOP_TYPE, float]):
 
-        self.model: TestModel
+        self.model: ThesisModel
         super().__init__(id, model)
         self.y = 10 # need change
         self._budget = 0
@@ -159,6 +159,8 @@ class ThesisAgent(TemplateAgent):
             self._MOP : dict[MOP_TYPE, float] = {model.init_mop: 10}
         else:
             self._MOP : dict[MOP_TYPE, float] = MOP
+
+        self.init_seller_candidate_list:list[int] = []
 
     def decide_consumption(self, *args, **kargs) -> float:
         print(f"Deciding consumptions for buyer {self.unique_id}")
@@ -176,21 +178,18 @@ class ThesisAgent(TemplateAgent):
         possibility of sellers exiting the economy, and making it a list might
         cause the agent to not be found
         """
-
-        all_sellers : dict[int, Self] = self.__scheduler.sellers
-        all_seller_ids = list(
-                all_sellers.keys()
-        )
-
+        init_seller_candidate:list[int] = self.init_seller_candidate_list.copy()
         random_shuffler = self.model.random.shuffle
 
-        random_shuffler(all_seller_ids)
+        random_shuffler(init_seller_candidate)
 
-        print(f"Buyer {self.unique_id} shopping candidate set")
-
-        for seller_id in all_seller_ids:
+        for seller_id in init_seller_candidate:
             if self.__scheduler.seller_exists(seller_id):
-                yield all_sellers[seller_id]
+                yield self.__scheduler.sellers[seller_id]
+
+    @seller_candidate.setter
+    def seller_candidate(self, seller_list: list[int]):
+        self.init_seller_candidate_list = seller_list
 
     def shop(self, seller_candidate : Iterator[Self]):
         print(f"Buyer {self.unique_id} is shopping")
@@ -258,4 +257,4 @@ class ThesisAgent(TemplateAgent):
 
     @property
     def __scheduler(self):
-        return self.model.scheduler
+        return self.model.schedule

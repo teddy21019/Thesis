@@ -5,7 +5,7 @@ import mesa
 import mesa.time
 import networkx as nx
 from src.agent import TestAgent, AgentType, ThesisAgent
-from src.schedule import TestScheduler
+from src.schedule import TestScheduler, ThesisScheduler
 from src.payment import MeansOfPaymentType
 from src.broadcast import subscribe
 from src.bank import TestBank
@@ -80,17 +80,15 @@ class TestModel(mesa.Model):
     def step(self):
         self.scheduler.step()
 
-
 class ThesisModel(TestModel):
     """ Main model for thesis"""
     def __init__(self,
                 N                       : int,
-                scheduler_constructor   : SchedulerConstructor,
                 cross_border_payment_network: nx.Graph
             ):
         self.random: Random
         super(mesa.Model, self).__init__()
-        self.scheduler              = scheduler_constructor(self)
+        self.schedule          = ThesisScheduler(self)
         self.agent_constructor = ThesisAgent
         self._trading_network = cross_border_payment_network
 
@@ -100,7 +98,7 @@ class ThesisModel(TestModel):
             for mop_name in ['H_Cash', 'H_Deposit', 'F_Cash', 'F_Deposit']
         }
         self._country_H_init_mop = (self.init_mops['H_Cash'], self.init_mops['H_Deposit'])
-        self._country_F_init_mop = (self.init_mops['H_Cash'], self.init_mops['H_Deposit'])
+        self._country_F_init_mop = (self.init_mops['F_Cash'], self.init_mops['F_Deposit'])
 
         self._create_agents()
         self._register_listeners()
@@ -124,11 +122,12 @@ class ThesisModel(TestModel):
         init_buyer_dict: dict[int, dict] = dict({
             node_id:data for node_id, data in all_agents if data['bipartite'] == 'buyer'
             })
-        self._init_buyers(buyer_dict = init_buyer_dict)
-
-        self._init_sellers(seller_dict = {
+        init_seller_dict: dict[int, dict] = dict({
             node_id:data for node_id, data in all_agents if data['bipartite'] == 'seller'
         })
+
+        self._init_buyers(buyer_dict = init_buyer_dict)
+        self._init_sellers(seller_dict = init_seller_dict)
 
         self._connect_trading_network_edges()
 
@@ -145,8 +144,8 @@ class ThesisModel(TestModel):
                 MOP         = {mop:10.0 for mop in init_mops}
             )
 
-            self.scheduler.add(
-                new_agent,
+            self.schedule.add(
+                new_agent
             )
 
     def _init_sellers(self, seller_dict: dict[int, dict]):
@@ -158,19 +157,38 @@ class ThesisModel(TestModel):
                 id          = s_id,
                 model       = self,
                 country     = country,
-                type        = AgentType.BUYER,
+                type        = AgentType.SELLER,
                 MOP         = {mop:10.0 for mop in init_mops }
             )
 
-            self.scheduler.add(
-                new_agent,
+            self.schedule.add(
+                new_agent
+            )
+    def _connect_trading_network_edges(self):
+        for buyer_id, buyer in self.schedule.buyers.items():
+            sellers_id :list[int] = list(self._trading_network[buyer_id].keys())
+            buyer.seller_candidate = sellers_id
+
+        assert any(
+            len(list(buyer.seller_candidate)) != 0 for i, buyer in self.schedule.buyers.items()
             )
 
     def _register_listeners(self):
-        subscribe(MOP_TYPE.H_CASH.value, self._bank.bank_handle_payment_callback_fn)
 
-    def MOP_to_real_value(self, mop:MOP_TYPE, value:float):
-        return value
+        ## Home bank
+        self.home_bank = TestBank()
+        subscribe(self.init_mops['H_Deposit'], self.home_bank.bank_handle_payment_callback_fn)
+
+        ##Foreign_bank
+        self.foreign_bank = TestBank()
+        subscribe(self.init_mops['F_Deposit'], self.foreign_bank.bank_handle_payment_callback_fn)
+
+        ## Others
+        subscribe(self.init_mops['H_Cash'], lambda x: print("\tUsing Home Cash!"))
+        subscribe(self.init_mops['F_Cash'], lambda x: print("\tUsing Foreign Cash!"))
+
+    def MOP_to_real_value(self, mop:MeansOfPaymentType, value:float):
+        return value * mop.exchange_rate_to_real
 
     def step(self):
-        self.scheduler.step()
+        self.schedule.step()
