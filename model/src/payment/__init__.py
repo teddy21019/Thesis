@@ -1,1 +1,1 @@
-from .payment import MOP_TYPE, Payment
+from .payment import MOP_TYPE, Payment, get_init_mop_from_country
