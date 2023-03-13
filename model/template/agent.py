@@ -78,7 +78,7 @@ class TemplateAgent(mesa.Agent, ABC):
             quantity : Number   = seller.offered_quantity
             print(f"Buyer {self.unique_id} is trading with {seller.unique_id}")
             payment.pay(price, quantity)
-            announce(payment.means_of_payment.value , {
+            announce(payment.means_of_payment , {
                 'sender': buyer.unique_id,
                 'receiver': seller.unique_id,
                 'amount': payment.p,

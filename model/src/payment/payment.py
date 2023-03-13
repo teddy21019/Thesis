@@ -2,14 +2,15 @@ from random import Random
 from typing import TYPE_CHECKING, ParamSpec, Protocol, TypeVar
 from enum import Enum, auto
 from dataclasses import dataclass
+from .mop import MeansOfPaymentType as MOP_TYPE
 
 Number = int | float
 
-class MOP_TYPE(Enum):
-    H_CASH = 'H_Cash'
-    F_CASH = 'F_Cash'
-    F_CBDC = 'F_CBDC'
-    DEPOSIT = 'Deposit'
+# class MOP_TYPE(Enum):
+#     H_CASH = 'H_Cash'
+#     F_CASH = 'F_Cash'
+#     F_CBDC = 'F_CBDC'
+#     DEPOSIT = 'Deposit'
 
 def get_init_mop_from_country(country: str):
     country_mop_map = {
