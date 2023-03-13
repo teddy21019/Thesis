@@ -33,6 +33,9 @@ class TestModel(mesa.Model):
         self.agent_constructor = TestAgent
         self.unique_id_generator    = count()
         self._bank = TestBank()
+
+        self.init_mop = MeansOfPaymentType('H_CBDC')
+
         self._create_agents()
         self._register_listeners()
 
@@ -44,21 +47,21 @@ class TestModel(mesa.Model):
 
     def _init_buyers(self):
         for i in range(2):
-            new_agent = self._init_agent(AgentType.BUYER, {MOP_TYPE.H_CASH:10})
+            new_agent = self._init_agent(AgentType.BUYER, {self.init_mop: 10})
             self.scheduler.add(
                 new_agent,
             )
 
     def _init_sellers(self):
         for i in range(2):
-            new_agent = self._init_agent(AgentType.SELLER, {MOP_TYPE.H_CASH:10})
+            new_agent = self._init_agent(AgentType.SELLER, {self.init_mop: 10})
             self.scheduler.add(
                 new_agent,
             )
 
     def _init_agent(self,
                     type: AgentType,
-                    mop_holding:dict[MOP_TYPE, float]
+                    mop_holding:dict[MeansOfPaymentType, float]
                     ):
         agent = self.agent_constructor(
             id = next(self.unique_id_generator),
@@ -69,10 +72,10 @@ class TestModel(mesa.Model):
         return agent
 
     def _register_listeners(self):
-        subscribe(MOP_TYPE.H_CASH.value, self._bank.bank_handle_payment_callback_fn)
+        subscribe(self.init_mop, self._bank.bank_handle_payment_callback_fn)
 
-    def MOP_to_real_value(self, mop:MOP_TYPE, value:float):
-        return value
+    def MOP_to_real_value(self, mop:MeansOfPaymentType, value:float):
+        return value * mop.exchange_rate_to_real
 
     def step(self):
         self.scheduler.step()

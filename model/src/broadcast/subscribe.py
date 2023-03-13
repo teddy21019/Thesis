@@ -1,9 +1,9 @@
-from typing import Callable, Any
+from typing import Callable, Any, Hashable
 
 
 __subscribers = dict()
 
-def subscribe(event_code:str, callback_fn:Callable) -> None :
+def subscribe(event_code:Hashable, callback_fn:Callable) -> None :
     """
     Subscribes some callback function to the given `event_code`.
 
@@ -30,7 +30,7 @@ def subscribe(event_code:str, callback_fn:Callable) -> None :
     __subscribers[event_code].append(callback_fn)
 
 
-def announce(event_code:str, data:Any) -> None:
+def announce(event_code:Hashable, data:Any) -> None:
     if event_code not in __subscribers:
         raise EventNotExistsError(event_code)
     for fn in __subscribers[event_code]:
@@ -38,6 +38,6 @@ def announce(event_code:str, data:Any) -> None:
 
 
 class EventNotExistsError(Exception):
-    def __init__(self, event_code:str):
+    def __init__(self, event_code:Hashable):
         super().__init__(f"Event 'f{event_code}' is not registered. Please check the code!")
         print(__subscribers)

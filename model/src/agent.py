@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Iterator, Self
 from enum import Enum, auto
-from src.payment import Payment, MOP_TYPE
+from src.payment import Payment, MeansOfPaymentType as MOP_TYPE
 from template.agent import TemplateAgent
 
 import logging
@@ -20,7 +20,7 @@ class AgentType(Enum):
 
 class TestAgent(TemplateAgent):
 
-    def __init__(self, id:int, model: TestModel, type: AgentType, MOP: None | dict[MOP_TYPE, float]):
+    def __init__(self, id:int, model: TestModel, type: AgentType, MOP: None | dict[ MOP_TYPE, float]):
         self.model: TestModel
         super().__init__(id, model)
         self.y = 10 # need change
@@ -29,7 +29,7 @@ class TestAgent(TemplateAgent):
         self._offered_price = 1
         # holding of assets
         if MOP is None:
-            self._MOP : dict[MOP_TYPE, float] = {MOP_TYPE.H_CASH:0}
+            self._MOP : dict[MOP_TYPE, float] = {model.init_mop: 10}
         else:
             self._MOP : dict[MOP_TYPE, float] = MOP
 
