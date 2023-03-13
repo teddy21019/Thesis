@@ -13,12 +13,13 @@ Number = int | float
 #     DEPOSIT = 'Deposit'
 
 def get_init_mop_from_country(country: str):
-    country_mop_map = {
-        'home'      : [ MOP_TYPE.H_CASH, MOP_TYPE.DEPOSIT ],
-        'foreign'   : [ MOP_TYPE.F_CASH, MOP_TYPE.DEPOSIT ]
-    }
+    return None
+#     country_mop_map = {
+#         'home'      : [ MOP_TYPE.H_CASH, MOP_TYPE.DEPOSIT ],
+#         'foreign'   : [ MOP_TYPE.F_CASH, MOP_TYPE.DEPOSIT ]
+#     }
 
-    return country_mop_map[country]
+    # return country_mop_map[country]
 
 class Trader(Protocol):
 
