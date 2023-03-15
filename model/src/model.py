@@ -200,3 +200,8 @@ class ThesisModel(TestModel):
 
     def step(self):
         self.schedule.step()
+
+    def id_list_to_agents(self, agent_id_list : list[int]):
+        if any(not isinstance(id_, int) for id_ in agent_id_list):
+            raise ValueError("Agent id list must contain only int.")
+        return [self.schedule._agents[aid] for aid in agent_id_list]
