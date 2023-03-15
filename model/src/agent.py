@@ -152,7 +152,7 @@ class ThesisAgent(TemplateAgent):
 
         self.model: ThesisModel
         super().__init__(id, model)
-        self.y = 10 # need change
+        self.y = 4 # need change
         self._budget = 0
         self.type : AgentType = type
         self.country = country
@@ -168,7 +168,7 @@ class ThesisAgent(TemplateAgent):
 
     def decide_consumption(self, *args, **kargs) -> float:
         print(f"Deciding consumptions for buyer {self.unique_id}")
-        self._budget = self.y * 0.5
+        self._budget += self.y * 0.5
         return self._budget
 
     @property
