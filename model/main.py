@@ -40,5 +40,5 @@ node_refs, combined = generate_cross_broader_bipartite(G1, G2, international_lev
 
 custom_scheduler = ThesisScheduler
 model = ThesisModel(N=30, cross_border_payment_network=combined)
-
-model.step()
+for i in range(5):
+    model.step()
