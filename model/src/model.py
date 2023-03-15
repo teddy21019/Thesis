@@ -97,6 +97,7 @@ class ThesisModel(TestModel):
             mop_name    : MeansOfPaymentType(mop_name)
             for mop_name in ['H_Cash', 'H_Deposit', 'F_Cash', 'F_Deposit']
         }
+        self._MOP_interest_rate = {mop:0.0 for mop in self.init_mops.values()}
         self._country_H_init_mop = (self.init_mops['H_Cash'], self.init_mops['H_Deposit'])
         self._country_F_init_mop = (self.init_mops['F_Cash'], self.init_mops['F_Deposit'])
 
@@ -189,6 +190,13 @@ class ThesisModel(TestModel):
 
     def MOP_to_real_value(self, mop:MeansOfPaymentType, value:float):
         return value * mop.exchange_rate_to_real
+
+    @property
+    def MOP_interest_rate(self):
+        return self._MOP_interest_rate
+
+    def set_interest_rate(self, mop:MeansOfPaymentType, i:float):
+        self._MOP_interest_rate[mop] = i
 
     def step(self):
         self.schedule.step()

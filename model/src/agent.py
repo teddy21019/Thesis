@@ -1,8 +1,11 @@
 from __future__ import annotations
+from functools import cached_property
 from typing import TYPE_CHECKING, Iterator, Self
 from enum import Enum, auto
 from src.payment import Payment, MeansOfPaymentType as MOP_TYPE
 from template.agent import TemplateAgent
+import numpy as np
+from scipy.special import softmax
 
 import logging
 logger = logging.getLogger('structure')
@@ -145,7 +148,7 @@ class ThesisAgent(TemplateAgent):
                  model: ThesisModel,
                  type: AgentType,
                  country: str,
-                 MOP: None | dict[ MOP_TYPE, float]):
+                 MOP: dict[ MOP_TYPE, float]):
 
         self.model: ThesisModel
         super().__init__(id, model)
@@ -154,13 +157,14 @@ class ThesisAgent(TemplateAgent):
         self.type : AgentType = type
         self.country = country
         self._offered_price = 1
+        self._acceptance_threshold = 0.2
         # holding of assets
-        if MOP is None:
-            self._MOP : dict[MOP_TYPE, float] = {model.init_mop: 10}
-        else:
-            self._MOP : dict[MOP_TYPE, float] = MOP
-
+        self._MOP : dict[MOP_TYPE, float] = MOP
+        self._accepted_mop = MOP
+        self._MOP_observe_memory = {mop:1.0 for mop in self._MOP}
         self.init_seller_candidate_list:list[int] = []
+
+        self._money_memory = 0.8
 
     def decide_consumption(self, *args, **kargs) -> float:
         print(f"Deciding consumptions for buyer {self.unique_id}")
@@ -211,10 +215,13 @@ class ThesisAgent(TemplateAgent):
         for mop in MOPS:
             if mop not in self._MOP:
                 self.see(mop)
+            orig_observation = self._MOP_observe_memory[mop]
+            self._MOP_observe_memory[mop] = orig_observation * self._money_memory + 1
+
 
     def see(self, mop: MOP_TYPE):
         """ Handles what an agent should do when saw a new means of payments"""
-        print(f"Agent {self.unique_id} now saw {mop}")
+        self._MOP_observe_memory[mop] = 0
 
     def change_in_MOP(self, mop: MOP_TYPE, price: float | int) -> None:
         self._MOP[mop]  = self._MOP[mop] + price
@@ -242,6 +249,39 @@ class ThesisAgent(TemplateAgent):
     def MOP(self, value):
         self._MOP = value
 
+    @property
+    def MOP_observe_freq(self):
+        """ The relative frequency of each observed means of payment"""
+        total_observe_count = sum(v for v in self._MOP_observe_memory.values())
+        return {mop: v / total_observe_count
+                for mop, v in self._MOP_observe_memory.items()}
+
+    @property
+    def accepted_mop(self):
+        """A dictionary that returns the accepted means of payment, with frequency as its value"""
+        self._accepted_mop = {mop:freq
+                for mop,freq in self.MOP_observe_freq.items() if freq > self._acceptance_threshold}
+        return self._accepted_mop
+
+    @property
+    def MOP_using_prob(self):
+        """
+        Returns the probability for each agents to use a certain type of means of payment.
+
+        The probability is adjusted using softmax function
+        """
+        from params.mop_params import INTEREST_RATE_DISUTILITY
+
+        i:dict = self.model.MOP_interest_rate
+        accepted_mop_values = np.array(list(self._accepted_mop.values()))
+        i_array = np.array([i[mop] for mop in self._accepted_mop])
+        utility = accepted_mop_values * 1 + INTEREST_RATE_DISUTILITY * i_array
+
+        probs = softmax(utility)
+
+        return dict(
+            zip(self._accepted_mop.keys(),probs)
+        )
 
     @property
     def offered_price(self) :

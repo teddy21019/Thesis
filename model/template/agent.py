@@ -21,6 +21,10 @@ class TemplateAgent(mesa.Agent, ABC):
     @abstractmethod
     def MOP(self) -> list[MOP_TYPE]:
         ...
+    @property
+    @abstractmethod
+    def MOP_using_prob(self) -> dict[MOP_TYPE, float]:
+        ...
     @abstractmethod
     def set_seen(self, MOPS: set[MOP_TYPE])-> None:
         ...

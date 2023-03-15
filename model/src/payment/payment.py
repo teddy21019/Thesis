@@ -9,7 +9,7 @@ Number = int | float
 class Trader(Protocol):
 
     @property
-    def MOP(self) -> list[MOP_TYPE]:
+    def MOP_using_prob(self) -> dict[MOP_TYPE, float]:
         ...
 
     def set_seen(self, MOPS: set[MOP_TYPE])-> None:
@@ -33,9 +33,11 @@ class Payment:
         else:
             self.__random = random
 
+        self.__seed = random
 
-        self.seller_mops = set(seller.MOP)
-        self.buyer_mops = set(buyer.MOP)
+
+        self.seller_mops = set(seller.MOP_using_prob)
+        self.buyer_mops = set(buyer.MOP_using_prob)
 
         self.__means_of_payment = self.decide_means_of_payment()
 
@@ -45,8 +47,10 @@ class Payment:
 
         if len(mop_in_common) == 0:
             return None
-
-        return self.__random.choice(mop_in_common)
+        return self.__random.choices(
+            mop_in_common,
+            [self.__buyer.MOP_using_prob[mop] for mop in mop_in_common],
+            k=1)[0]
 
     @property
     def means_of_payment(self) -> MOP_TYPE | None:
