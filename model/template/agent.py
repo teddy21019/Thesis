@@ -76,7 +76,7 @@ class TemplateAgent(mesa.Agent, ABC):
             payment.set_seen_means_of_payment_to([seller, buyer])
 
             if payment.means_of_payment is None:
-                print("\tWant to trade but no common MOP")
+                print(f"Buyer {buyer.unique_id} wants to trade with seller {seller.unique_id} but no common MOP")
                 continue
 
             price : Number      = seller.offered_price

@@ -20,7 +20,7 @@ logger.setLevel(logging.DEBUG)
 # model = TestModel(N=30, scheduler_constructor=custom_scheduler)
 
 
-node_n = 30
+node_n = 10
 avg_edge = 5
 total_edge = node_n * avg_edge
 
@@ -36,7 +36,7 @@ id_generator = count()
 node_1, G1 = edge_distribution_to_bipartite_network(edges[0], edges[1], ("buyer", "seller"), id_generator, country = "home")
 node_2, G2 = edge_distribution_to_bipartite_network(edges[2], edges[3], ("buyer", "seller"), id_generator, country = "foreign")
 
-node_refs, combined = generate_cross_broader_bipartite(G1, G2, international_level=0.2)
+node_refs, combined = generate_cross_broader_bipartite(G1, G2, international_level=0.8)
 
 custom_scheduler = ThesisScheduler
 model = ThesisModel(N=30, cross_border_payment_network=combined)
