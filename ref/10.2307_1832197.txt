@@ -1,0 +1,15 @@
+@article{10.2307/1832197,
+ ISSN = {00223808, 1537534X},
+ URL = {http://www.jstor.org/stable/1832197},
+ abstract = {We analyze economies in which individuals specialize in consumption and production and meet randomly over time in a way that implies that trade must be bilateral and quid pro quo. Nash equilibria in trading strategies are characterized. Certain goods emerge endogenously as media of exchange, or commodity money, depending both on their intrinsic properties and on extrinsic beliefs. There are also equilibria with genuine fiat currency circulating as the general medium of exchange. We find that equilibria are not generally Pareto optimal and that introducing fiat currency into a commodity money economy may unambiguously improve welfare. Velocity, acceptability, and liquidity are discussed.},
+ author = {Nobuhiro Kiyotaki and Randall Wright},
+ journal = {Journal of Political Economy},
+ number = {4},
+ pages = {927--954},
+ publisher = {University of Chicago Press},
+ title = {On Money as a Medium of Exchange},
+ urldate = {2023-03-20},
+ volume = {97},
+ year = {1989}
+}
+
