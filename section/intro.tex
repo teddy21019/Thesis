@@ -1,6 +1,6 @@
 During the outbreaks of Covid-19, physical cash and coins are considered to be
 one of the possibilities of invisible route of transmission, and more and more
-individuals choose to pay with digital payments. 
+individuals choose to pay with digital payments.
 (introduction of CBDC)
 One major consideration is its risk of financial disintermediation[cite].  As it
 allows people to hold an ``account'' directly in the central bank, people used
@@ -10,16 +10,45 @@ definition backed by central bank, and typically has no risk of run. The
 withdrawal might cause commercial banks to shrink their balance sheet, hence
 increasing their leverage on credits.  The signal of high leverage and low money
 holding further causes withdrawal from non-digital payment users, and the
-economy enters a bank-run episode. 
+economy enters a bank-run episode.
 
 As mentioned by \citet*{DD83}, measures like deposit insurance can be used to
 alleviate the fear of a bank run, hence preventing bank runs to happen. However,
 this will fail to be the solution if the CBDC that is held widely in the current
 country is issued by a foreign country. When the foreign currency is also a
 potential candidate of a global means of payment, this currency substitution
-effect will be especially difficult to prevent. For potential agents about to withdraw, deposit insurance is no longer a
-convincing solution, since central banks may also run out of foreign reserves. 
+effect will be especially difficult to prevent.
+For potential agents about to withdraw, deposit insurance is no longer a
+convincing solution of stability, since central banks may also run out of foreign reserves.
 
 As dreadful as it looks, currency substitution might not necessarily happen.
 Decisions of means of payment is a global coordination game through a
-self-fulfilling process[cite]. 
+self-fulfilling process[cite], and without the foreign CBDC being widely
+utilized, the episode is unlikely to happen.
+As most literatures in CBDC considers the policy and welfare implications in an
+economy purely embedded with CBDC, the era where physical cash and CBDC coexists
+might not be happening so quickly, and countries with different levels of
+development might also adapt this new system in different paces, therefore the
+scenario of currency substitution is worth consider
+In this paper, I deploy an Agent-Based Model (ABM) to fill the gap of the past
+literatre by considering the effect of the adaptation of a mean of payment. The
+decision of means of payment for each individual can be dynamically observed,
+and it is closely determined by the network and interaction protocol \citep*{KW98}.
+
+The model consists of three sectors: buyer sector, seller sector, and commercial
+bank sector. The buyers and sellers toggle to each other periodically, so that
+the interaction strategically complements the popularity of some means of
+payments, reinforcing (and as well suppressing) the adaptation of CBDC. The
+usage of a certain means of payment thus determines their portfolio decision,
+and hence affecting the balance sheet of a commercial bank. The balance sheet as
+well as its leverage ratio is publicly observed by all agents, and agents with
+difference tolerance rate react and withdraw accordingly. The fear is spread
+along the social network, potentially causing a bank run.
+
+The key different between CBDC and other existing means of payment is that CBDC
+can be designed to have high interoperability, where substitution from domestic
+bank deposit to foreign CBDC is more effortless and cheaper compared to foreign
+bank deposits, as traditional cross border payment usually involves a multitude
+ofhome intermediates.
+
+The rest of this paper is organized as follows. In section \# I review some of the literatures regarding the financial implications of CBDC and a brief introduction to ABM. Section \# describes the model in detail. Section \# demonstrates the simulation result with some sensitivity check. Finally, I conclude the policy implications and future extensions regarding this issue.
