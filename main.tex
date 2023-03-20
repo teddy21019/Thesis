@@ -1,11 +1,19 @@
 
-\documentclass{article}
+\documentclass[11pt, a4paper]{article}
 
 %% Bibliography
 \usepackage{natbib}
+
+%% Math
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+
+%% View
+\usepackage{geometry}
+\geometry{left= 1in, right=1in, top=1.5in}
+\renewcommand{\baselinestretch}{1.5} 
+
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 
@@ -23,6 +31,8 @@ Currency Substitution Due to Cross-border CBDC and Its Implications in Financial
 
     \section{Introduction}
     \input{section/intro.tex}
+    \section{Literature Review}
+    \input{section/lit.tex}
     \section{Model}
     \input{section/model.tex} 
 
