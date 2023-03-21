@@ -1,0 +1,1 @@
+{"rule":"MIGHT_PERHAPS","sentence":"^\\QIn the absence of perfect coordination and perfect foresight, however, an agent might possibly hold a depreciating currency solely due to the fact that it is the only means of payment widely used regionally.\\E$"}
