@@ -26,6 +26,17 @@ class ThesisBank(Bank):
         self.name = name
         self.liability :dict[int, float]= {}
         self.assets = 0
+        self._reserve_rate: float = 0.4
+        self._leverage = 1
+    @property
+    def reserve_rate(self):
+        return self._reserve_rate
+
+    @reserve_rate.setter
+    def reserve_rate(self, value:float):
+        if value > 1 or value < 0 :
+            raise ValueError("Reserve rate limited within [0,1]")
+        self._reserve_rate = value
 
     def add_account(self, user_id: int, deposit_value:float)->None:
         """Initialize user with its deposit values"""
@@ -42,3 +53,8 @@ class ThesisBank(Bank):
 
         self.change_deposit(sender_id, -amount)
         self.change_deposit(receiver_id, amount)
+
+
+    @property
+    def leverage(self):
+        return self.assets / sum(self.liability.values())
