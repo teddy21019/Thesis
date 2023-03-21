@@ -24,9 +24,37 @@ risk of a run. The model, however, only sees CBDC as a safe deposit, which is an
 asset with interest rate, being a liability of the central bank. In reality,
 agents might not want to deposit money in CBDC accounts solely due to it being
 riskless, as it might not be the mean of payment widely used. This motivates the
-methodology of using agent-based modelling, since it is capable of observing
-both an endogenous formation of CBDC as a means of payment, while simultaneously
+methodology of using agent-based modelling, since it is capable of observing the
+endogenous formation of CBDC as a means of payment, while simultaneously
 activates an episode of fear through sentimental spreading.
 
-
 \subsection{Agent-based Modeling}
+
+\begin{center}
+    Agent-based modeling intro
+\end{center}
+
+To motivate endogenous adoption of a certain means of payment, it is necessary
+to embed a trading system. Several literatures proposes the designs of this
+system. The Complex Adaptive Trivial System (CATS) mentioned in
+\citet*{HandbookABM}, agents (households) choose firms from the lowest price in
+the market during a consumption bundle decision stage; also in
+\citet*{HandbookABM} the two framework EUBI and EBGE chooses the goods to buy
+according to a logistic probability depending on the price firms offer. As for
+the decision process of the selection of which means of payment to use during a
+trade, these macroeconomic agent-based model does not implement this as they
+focus more on quantitatively matching the stylized fact of a business cycle.
+\citet*{Sargent90-MoneyAI} studies a \citet*{KW98} economy using a classifier
+system evolving genetically to study the emergence of a medium of exchange.
+\citet*{Manolis21} transforms an ABM model for language spreading into a study
+for parallel circulation of currencies under a scale-free social
+network.\footnote{In \citet*{Manolis21}, he generates a trading network using
+preferential attachment, and according to network literatures, this network has
+the property known as ``scale-free''\citep*{Price1976}. As you shall see in my model, I also
+follow this idea to create a synthetic scale-free bipartite network as my
+international trading net.}
+His model, however, does not study the formation during trading process, but through
+simply a spreading process.
+A more structural model that studies the selection of a payment system during a repetitive trading process is \citet*{Trade_ABM_MOP2006}. They study how agents adopt to new payments systems using ABM, and the probability of selecting a means of payment depends on the utility function of selecting it.
+
+Although the literature of ABM is abundant regarding the trading process, there is a crucial component that is missing, which unfortunately is the key to my research --- the expectation for events. For macroeconomic agent-based models, the expectation can be addressed by artificial neural networks \cite[see][]{Salle15-ABM_EXP} or genetic algorithms \cite[see][]{Arifovic18-GA_EXP}.
