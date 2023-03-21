@@ -164,7 +164,7 @@ class ThesisAgent(TemplateAgent):
         self._MOP_observe_memory = {mop:1.0 for mop in self._MOP}
         self.init_seller_candidate_list:list[int] = []
 
-        self._money_memory = 0.8
+        self._money_memory = 1.0
 
     def decide_consumption(self, *args, **kargs) -> float:
         print(f"Deciding consumptions for buyer {self.unique_id}")
