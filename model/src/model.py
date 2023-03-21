@@ -4,6 +4,7 @@ from itertools import count
 import mesa
 import mesa.time
 import networkx as nx
+from src.bank import ThesisBank
 from src.agent import TestAgent, AgentType, ThesisAgent
 from src.schedule import TestScheduler, ThesisScheduler
 from src.payment import MeansOfPaymentType
@@ -102,6 +103,7 @@ class ThesisModel(TestModel):
         self._country_F_init_mop = (self.init_mops['F_Cash'], self.init_mops['F_Deposit'])
 
         self._create_agents()
+        self._init_banks()
         self._register_listeners()
 
 
@@ -174,15 +176,26 @@ class ThesisModel(TestModel):
             len(list(buyer.seller_candidate)) != 0 for i, buyer in self.schedule.buyers.items()
             )
 
+    def _init_banks(self):
+
+        self.home_bank = ThesisBank('home')
+        self.foreign_bank = ThesisBank('foreign')
+
+        for aid, agent in self.agents.items():
+            if agent.country == 'home':
+                self.home_bank.add_account(aid, agent._MOP[MeansOfPaymentType('H_Deposit')])
+            if agent.country == 'foreign':
+                self.foreign_bank.add_account(aid, agent._MOP[MeansOfPaymentType('F_Deposit')])
+
+
     def _register_listeners(self):
 
         ## Home bank
-        self.home_bank = TestBank()
         subscribe(self.init_mops['H_Deposit'], self.home_bank.bank_handle_payment_callback_fn)
 
         ##Foreign_bank
-        self.foreign_bank = TestBank()
         subscribe(self.init_mops['F_Deposit'], self.foreign_bank.bank_handle_payment_callback_fn)
+
 
         ## Others
         subscribe(self.init_mops['H_Cash'], lambda x: print("\tUsing Home Cash!"))
@@ -205,3 +218,7 @@ class ThesisModel(TestModel):
         if any(not isinstance(id_, int) for id_ in agent_id_list):
             raise ValueError("Agent id list must contain only int.")
         return [self.schedule._agents[aid] for aid in agent_id_list]
+
+    @property
+    def agents(self):
+        return {**self.schedule._sellers, **self.schedule._buyers}

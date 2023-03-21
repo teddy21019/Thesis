@@ -218,8 +218,12 @@ class ThesisScheduler(TemplateScheduler):
 
     def _seller_buyer_toggle_step(self) -> None:
         logger.debug("Seller buyer toggle step")
-        super()._seller_buyer_toggle_step()
+        for seller in self._sellers.values():
+            seller.type = AgentType.BUYER
+        for buyer in self._buyers.values():
+            buyer.type = AgentType.SELLER
 
+        self._sellers, self._buyers = self._buyers, self._sellers
 
     def _buyer_activation_order(self) -> Iterator[ThesisAgent]:
         random_generator: Random = self.model.random #type: ignore
