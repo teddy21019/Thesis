@@ -61,25 +61,123 @@ We follow the simple keynesian setting and let the consumption be a proportion o
 
    For each buyer $b$ at time $t$, one consumes
    \begin{equation}
-      C_{b,t} = \mathrm{MPC}\times \mathrm{DI}_{b,t} + a + \epsilon_t
+      C_{b,t} = \mathrm{MPC}\times \mathrm{DI}_{b,t} + a + \epsilon_t ,
    \end{equation}
-   Where $\mathrm{MPC}$ is the marginal propensity to consume, $\mathrm{DI}$ is the disposable income, $a$ is the minimal amount of expenditure, and $\epsilon$ is a random shock on consumption.
+   where $\mathrm{MPC}$ is the marginal propensity to consume, $\mathrm{DI}$ is the disposable income, $a$ is the minimal amount of expenditure, and $\epsilon$ is a random shock on consumption.
 \end{definition}
 
+\subsubsection*{Consumption Bundle}
 After all buyers complete deciding its consumption budget, they proceed to decide the consumption bundle.
 
 \begin{definition}
 {Consumption Bundle Step}
 \begin{enumerate}
-   \item Buyer $b$ select candidate sellers $\{s \in \mathcal{N}_b\}$ from its trading network $\mathcal{N}_b$.\footnote{See Appendix A for detail on the network}
+   \item Buyer $b$ selects candidate sellers $\{s \in \mathcal{N}_b\}$ from its trading network $\mathcal{N}_b$.\footnote{See Appendix A for detail on the network}
    \item If seller $s$ is out of stock, proceed to the next candidate.
    \item If buyer $b$ itself is out of budget, one stops the consumption and the next buyer consumes.\footnote{In this agent-based model, buyers are activated randomly, but in order. In computer science this is called ``synchronous''}
    \item During each trade, the agents go through a payment decision process.
 \end{enumerate}
 \end{definition}
 
-The payment decision process (hereafter PDP) depends on the frequency of past appearance, its opportunity cost of using it as a MoP (interest rate), its cost of holding the asset (storing cost or inflation rate), as depicted in the functionalism theory. Holding a MoP has different incentives from a payment aspect and an asset aspect.
+The payment decision process (hereafter PDP) depends on the frequency of past
+appearance, its opportunity cost of using it as a MoP (interest rate), its cost
+of holding the asset (storing cost or inflation rate), following the
+functionalism view of money. Holding a MoP has different incentives from a
+payment aspect and an asset aspect. The next part describes the procedure of a PDP\@.
 
+\subsection{Payment Decision}
 
+\newcommand{\MOP}{\mathrm{MOP}}
+\newcommand{\mop}{\mathrm{mop}}
 
+\subsubsection*{Notations}
 
+At every moment (a tick in the simulation), an agent recognizes a set of MoP,
+denoted as $\MOP_{a,t} = \{ \mop_1, \mop_2, \dots, \mop_{n(a,t)} \}$, where
+$\mop$ denotes one kind of MoP, such as foreign country bank deposit or foreign
+CBDC\@; $n(a,t)$ denotes the total number of means of payment that an agent sees
+up to time $t$. If an agent discovers a new type of MoP, $n(a,t)$ increases by $1$.
+
+Every agent has a record of the occurrence of each MoP it saw previously, denoted as
+\begin{equation}
+   F_{a,t} = \{f^m_t \mid m \in \MOP_{a,t}\} ,
+\end{equation}
+
+where $f^m_t$ represents the memorized occurrence of MoP $m$ at time $t$, accumulated according to an AR(1) process:
+\begin{equation}
+   f^m_{t+1} = \rho f^m_t + \Delta^m_t .
+\end{equation}
+The damping factor $\rho$ captures the ``memory'' of an agent, and $\Delta^m_t$
+is the amount of MoP $m$ an agent has seen during all the transaction one done
+during time $t$.
+Also define the frequency of observation
+
+\begin{equation}
+   \tilde{F}_{a,t} = \left\{ \tilde{f}^m_t = \frac{f^m_t}{n_f} \mid  m \in \MOP_{a,t}\right\},
+\end{equation}
+where $n_f$ is the normalization factor, defined as the sum of all $f^m_t$
+\begin{eqnarray*}
+   n_{f} = \sum_{m \in \MOP_{a,t}} f^m_t \quad \forall a ,
+\end{eqnarray*}
+
+\begin{definition}
+   {Acceptance of MoP}
+   An agent accepts or pays with a MoP if and only if the frequency of
+   observation exceeds some threshold. Denote the set of acceptance as
+   \begin{equation}
+      A_{a,t} = \left\{ m \in \MOP_{a,t} \mid \tilde{f}^m_{at}>threshold_a\right\}
+   \end{equation}
+\end{definition}
+
+\subsubsection*{Random Utility Model}
+
+An agent makes decision according to a probability vector. An agent has, for
+each MoP, a collection of information regarding the specific MoP, and calculates
+the utility for using it \citep*{Csik96,Matsatsinis00,Trade_ABM_MOP2006}
+
+Assume that an agent's utility function for using a MoP $m$ is
+\begin{equation}
+   V^m_{at} = U^m_{at}(\tilde{f}^m_{at}, i^m_t, X_t) + \varepsilon^m_{at} ,
+\end{equation}
+where $U(\cdot)$ is a deterministic utility function depending on the past
+frequency of observing this MoP $\tilde{f}^m_{a,t}$, the interest rate $i^m_t$,
+and other factors that an agent might take into consideration when choosing.
+
+The error term $\varepsilon^m_{at}$ captures the idiosyncratic shock that an
+agent faces when choosing. If we assume
+that the error term follows a T1EV distribution
+\begin{equation*}
+   F(\varepsilon) = e^{-e^{-\varepsilon}}
+\end{equation*}
+the probability function will be in a logistic form \citep*{McFadden74}
+\begin{equation}
+   P(m \mid \tilde{f}^m_{at}, i^m_t, X_t) =
+      \frac{\exp(U^m_{a,t})}
+      {
+         \sum_{j \in \mathcal{S}} \exp(U^j_{a,t})
+      },\qquad \forall m \in \mathcal{S},
+\end{equation}
+where $\mathcal{S} = A_{a,t} \cap A_{b,t}$ is the set of mutual MoPs, which is
+the MoPs that both a buyer and a seller in the current transaction agree to use.
+
+For now, I simply assume that the deterministic part of the utility takes a
+linear form
+\begin{equation}
+   U^m_{at}(\tilde{f}^m_{at}, i^m_t, X_t) = \beta_1 \tilde{f}^m_{at} + \beta_2 i^m_t
+\end{equation}
+Intuitively, we would expect $\beta_1$ to be positive since a more common MoP is
+more likely to provide the agent with successful consumption, thus increasing
+their future utility. On the other hand, we would expect $\beta_2$ to be
+negative since using an MoP to purchase goods incurs a higher opportunity cost
+compared to holding it as an asset and receiving interest. This is because using
+the MoP for consumption means the agent cannot earn interest on the amount
+spent, whereas holding the MoP as an asset allows them to earn interest on it.
+
+\subsection{Seller's Adjustment}
+
+In the baseline model of \citet*{HandbookABM}, sellers (firms) observe their
+inventories and price distribution of ones' neighbor and make adjustments on
+price and production accordingly. In this model, however, the price mechanism is pulled out
+to have better focus on the transmission of new MoPs. Therefore, the seller only
+has to reallocate its portfolio after receiving MoPs from buyers. Imagine a shop
+owner depositing all his earnings in cash form to his bank account.
