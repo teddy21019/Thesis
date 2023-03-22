@@ -34,6 +34,8 @@ acceleration coming from the capital market \citep{BGG96}.
 Central banks interest rates are temporarily set exogenously.
 %% currently unclear whether the simple setting could cause inflation, and thus the Taylor rule is not compatible.
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %%
@@ -50,13 +52,34 @@ Central banks interest rates are temporarily set exogenously.
 \subsection{Consumption Decision}
 
 Following \citet*{HandbookABM}, consumption decision for a buyer is separated into two steps: consumption budget and consumption bundle.
-\begin{definition}[General Rule of Consumption Decision]
-   For each buyer $b \in \mathcal{B}^t$, given the history of the individual
-   states $S^t_b$ and one's surrounding state $\mathbf{S}^t$, the agent's
-   consumption decision can be denoted as $(C, \{q_j\}_{\forall j \in
-   \mathcal{G}_b})$, where $C\in \mathbb{R}$ denotes the real consumption
-   budget, $\mathcal{G}_b$ denotes the goods seller in contact with buyer $b$,
-   and $q_j$ denotes the quantity of goods $b$ bought from seller $j$.
+
+\subsubsection*{Consumption Budget}
+
+We follow the simple keynesian setting and let the consumption be a proportion of its disposable income
+
+\begin{definition}{General Rule of Consumption}
+
+   For each buyer $b$ at time $t$, one consumes
+   \begin{equation}
+      C_{b,t} = \mathrm{MPC}\times \mathrm{DI}_{b,t} + a + \epsilon_t
+   \end{equation}
+   Where $\mathrm{MPC}$ is the marginal propensity to consume, $\mathrm{DI}$ is the disposable income, $a$ is the minimal amount of expenditure, and $\epsilon$ is a random shock on consumption.
 \end{definition}
+
+After all buyers complete deciding its consumption budget, they proceed to decide the consumption bundle.
+
+\begin{definition}
+{Consumption Bundle Step}
+\begin{enumerate}
+   \item Buyer $b$ select candidate sellers $\{s \in \mathcal{N}_b\}$ from its trading network $\mathcal{N}_b$.\footnote{See Appendix A for detail on the network}
+   \item If seller $s$ is out of stock, proceed to the next candidate.
+   \item If buyer $b$ itself is out of budget, one stops the consumption and the next buyer consumes.\footnote{In this agent-based model, buyers are activated randomly, but in order. In computer science this is called ``synchronous''}
+   \item During each trade, the agents go through a payment decision process.
+\end{enumerate}
+\end{definition}
+
+The payment decision process (hereafter PDP) depends on the frequency of past appearance, its opportunity cost of using it as a MoP (interest rate), its cost of holding the asset (storing cost or inflation rate), as depicted in the functionalism theory. Holding a MoP has different incentives from a payment aspect and an asset aspect.
+
+
 
 
