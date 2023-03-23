@@ -1,0 +1,15 @@
+@article{10.1086/429804,
+ ISSN = {00223808, 1537534X},
+ URL = {http://www.jstor.org/stable/10.1086/429804},
+ abstract = {Search‐theoretic models of monetary exchange are based on explicit descriptions of the frictions that make money essential. However, tractable versions of these models typically make strong assumptions that render them ill suited for monetary policy analysis. We propose a new framework, based on explicit micro foundations, within which macro policy can be studied. The framework is analytically tractable and easily quantifiable. We calibrate the model to standard observations and use it to measure the cost of inflation. We find that going from 10 percent to 0 percent inflation is worth between 3 and 5 percent of consumption—much higher than previous estimates.},
+ author = {Ricardo Lagos and Randall Wright},
+ journal = {Journal of Political Economy},
+ number = {3},
+ pages = {463--484},
+ publisher = {The University of Chicago Press},
+ title = {A Unified Framework for Monetary Theory and Policy Analysis},
+ urldate = {2023-03-22},
+ volume = {113},
+ year = {2005}
+}
+
