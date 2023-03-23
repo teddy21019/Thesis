@@ -57,8 +57,8 @@ Following \citet*{HandbookABM}, consumption decision for a buyer is separated in
 
 We follow the simple keynesian setting and let the consumption be a proportion of its disposable income
 
-\begin{definition}{General Rule of Consumption}
-
+\begin{definition}[General Rule of Consumption]
+   {\phantom{text} \\}
    For each buyer $b$ at time $t$, one consumes
    \begin{equation}
       C_{b,t} = \mathrm{MPC}\times \mathrm{DI}_{b,t} + a + \epsilon_t ,
@@ -70,18 +70,21 @@ We follow the simple keynesian setting and let the consumption be a proportion o
 After all buyers complete deciding its consumption budget, they proceed to decide the consumption bundle.
 
 \begin{definition}
-{Consumption Bundle Step}
+[Consumption Bundle Step]
+\phantom{} \\
 \begin{enumerate}
-   \item Buyer $b$ selects candidate sellers $\{s \in \mathcal{N}_b\}$ from its trading network $\mathcal{N}_b$.\footnote{See Appendix A for detail on the network}
+   \item Buyer $b$ selects candidate sellers $\{s \in \mathcal{N}_b\}$ from its
+   trading network $\mathcal{N}_b$.\footnote{See Appendix \ref{sec-network} for detail on the
+   network.}
    \item If seller $s$ is out of stock, proceed to the next candidate.
-   \item If buyer $b$ itself is out of budget, one stops the consumption and the next buyer consumes.\footnote{In this agent-based model, buyers are activated randomly, but in order. In computer science this is called ``synchronous''}
+   \item If buyer $b$ itself is out of budget, one stops the consumption and the next buyer consumes.\footnote{In this agent-based model, buyers are activated randomly, but in order. In computer science this is called ``synchronous''.}
    \item During each trade, the agents go through a payment decision process.
 \end{enumerate}
 \end{definition}
 
 The payment decision process (hereafter PDP) depends on the frequency of past
 appearance, its opportunity cost of using it as a MoP (interest rate), its cost
-of holding the asset (storing cost or inflation rate), following the
+of holding the asset (risk of confiscation or inflation rate), following the
 functionalism view of money. Holding a MoP has different incentives from a
 payment aspect and an asset aspect. The next part describes the procedure of a PDP\@.
 
@@ -121,7 +124,8 @@ where $n_f$ is the normalization factor, defined as the sum of all $f^m_t$
 \end{eqnarray*}
 
 \begin{definition}
-   {Acceptance of MoP}
+   [Acceptance of MoP]
+   \phantom{}\\
    An agent accepts or pays with a MoP if and only if the frequency of
    observation exceeds some threshold. Denote the set of acceptance as
    \begin{equation}
@@ -137,6 +141,7 @@ the utility for using it \citep*{Csik96,Matsatsinis00,Trade_ABM_MOP2006}
 
 Assume that an agent's utility function for using a MoP $m$ is
 \begin{equation}
+   \label{eq:MOP-utility}
    V^m_{at} = U^m_{at}(\tilde{f}^m_{at}, i^m_t, X_t) + \varepsilon^m_{at} ,
 \end{equation}
 where $U(\cdot)$ is a deterministic utility function depending on the past
@@ -150,15 +155,19 @@ that the error term follows a T1EV distribution
    F(\varepsilon) = e^{-e^{-\varepsilon}}
 \end{equation*}
 the probability function will be in a logistic form \citep*{McFadden74}
-\begin{equation}
-   P(m \mid \tilde{f}^m_{at}, i^m_t, X_t) =
-      \frac{\exp(U^m_{a,t})}
-      {
-         \sum_{j \in \mathcal{S}} \exp(U^j_{a,t})
-      },\qquad \forall m \in \mathcal{S},
-\end{equation}
-where $\mathcal{S} = A_{a,t} \cap A_{b,t}$ is the set of mutual MoPs, which is
-the MoPs that both a buyer and a seller in the current transaction agree to use.
+
+\begin{definition}
+   [Probability of MoP Selection]
+   \begin{equation}
+      P(m \mid \tilde{f}^m_{at}, i^m_t, X_t) =
+         \frac{\exp(U^m_{a,t})}
+         {
+            \sum_{j \in \mathcal{S}} \exp(U^j_{a,t})
+         },\qquad \text{for } m \in \mathcal{S},
+   \end{equation}
+   where $\mathcal{S} = A_{a,t} \cap A_{b,t}$ is the set of mutual MoPs, which is
+   the MoPs that both a buyer and a seller in the current transaction agree to use.
+\end{definition}
 
 For now, I simply assume that the deterministic part of the utility takes a
 linear form
@@ -173,11 +182,79 @@ compared to holding it as an asset and receiving interest. This is because using
 the MoP for consumption means the agent cannot earn interest on the amount
 spent, whereas holding the MoP as an asset allows them to earn interest on it.
 
-\subsection{Seller's Adjustment}
+\subsection{Portfolio Reallocation}
 
 In the baseline model of \citet*{HandbookABM}, sellers (firms) observe their
 inventories and price distribution of ones' neighbor and make adjustments on
-price and production accordingly. In this model, however, the price mechanism is pulled out
-to have better focus on the transmission of new MoPs. Therefore, the seller only
-has to reallocate its portfolio after receiving MoPs from buyers. Imagine a shop
-owner depositing all his earnings in cash form to his bank account.
+price and production accordingly. In this model, however, the price mechanism is
+pulled out to have a better focus on the transmission of new MoPs. Therefore,
+the seller only has to reallocate its portfolio after receiving MoPs from
+buyers. Imagine a shop owner depositing all his earnings in cash form to his
+bank account.
+
+During the reallocation, an agent considers three key components --- usage in
+payment, future return, and cost in holding. Notice that there is actually a
+tradeoff between using a monetary asset as an asset or not, hence you may notice
+the symmetry between the decision process of using it as a means of payment or
+an asset.
+
+In the monetary search literature, a representative agent makes decision on the
+portfolio to maximizes ones value function in a centralized market, where the
+return of an asset is realized \citep*{LW05,LiLi19}. The value function of the centralized market includes the value function of the decentralized market, therefore the decision making of an agent's holding in the centralized market indirectly affect the success rate of an exchange in the next subperiod.
+
+In an ABM setting, however, we are unable, and unrealistic, to construct a
+Bellman equation that captures the decision of MoP in the decentralized market
+and the reallocation of the MoP as an asset simultaneously. Therefore I approach
+this with another random utility model, with the same indicators an agent used
+for MoP decision, but with a different set of parameter.
+
+Similar to Eq. \ref{eq:MOP-utility}
+
+\begin{equation}
+   \label{eq:POR-utility}
+   T^m_{at} = W^m_{at}(\tilde{f}^m_{at}, i^m_t, X_t) + \nu^m_{at} ,
+\end{equation}
+is the myopic utility of holding a MoP to the next period after reallocation.
+
+\begin{center}
+   (To be continued)
+   (Trouble deciding what to do)
+\end{center}
+
+\subsection{Banks}
+
+There is a home bank (HB) and a foreign bank (FB); each has its own deposit.
+While ABM is capable of simulating a real-time gross settlement (RTGS) payment
+system and endogenously capture the optimal process to cope with a liquidity
+shock~\citep*{GS08-ABM-Payment}, for simplicity I set the proportion of illiquid
+assets for a bank as an exogenous variable
+
+\begin{definition}
+   [Depositor's money allocation]
+   \phantom{}\\
+   Assume that the depositor puts in $v$ amount of MoP $m$ into a bank $b$,
+   depending on its interoperability level $\xi_{m, b}\in [0,1]$, the bank adds
+   $\xi_{m,b}v$ to its liability, and adds $\ell_b v$ to its capitals, and
+   $(1-\ell_b) v$ to its reserves. $\ell_b$ is the capital adequacy ratio of the
+   bank, and is set exogenously.
+\end{definition}
+
+I do not explicitly model the bank's asset portfolio, as well as its returns, since this is not the focus of this paper. The reserves, however, is clearly recorded. Moreover, the agents have transparent information about the leverage rate (using dept-to-equity). Agents trigger a bank run panic through observing this publicly announced information.
+
+\subsection{Bank Run}
+
+The bank run is triggered by an panic criteria and the followed up imitation behavior \citep*{Santos2021}.
+
+\begin{definition}
+   [Panic criteria]
+   \phantom{}\\
+   For an agent that has a D/E ratio tolerance ratio $\phi_a$, if the D/E ratio of a bank is higher than its tolerance ratio, $\mathrm{D/E}_b < \phi_a$, the agents withdraw all its deposits from the bank.
+\end{definition}
+Note that the tolerance ratio is heterogenous, so the bank run episode is not going to happen like an avalanche. The key mechanism is the imitation behavior, or herding behavior, that will spread the fear and causing the bank run to realize.
+
+\begin{definition}
+   [Imitation Rule]
+   \phantom{text} \\
+   If more than $\zeta \in [0,1]$ ratio of agents in its network withdraws from bank $b$ in past $T_{br}$ period, then the agent also withdraws, no matter whether the D/E ratio exceeds it tolerance ratio or not.
+
+\end{definition}
