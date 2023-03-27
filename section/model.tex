@@ -1,7 +1,7 @@
 \subsection{Basis Flow and Structure}
 
-The model is composed of two open economies and three sectors --- buyers/sellers
-banks, and government. Each country issues its own currency, but all buyers have
+The model is composed of two open economies and three sectors --- buyers/sellers,
+banks and governments. Each country issues its own currency, but all buyers have
 the freedom to decide what means of payment (hereafter MoP) to use.  There is
 an alternation of roles between buyers and sellers, with each transitioning to
 the other role once a successful trade is conducted. This setting is to assure
@@ -51,11 +51,13 @@ Central banks interest rates are temporarily set exogenously.
 
 \subsection{Consumption Decision}
 
-Following \citet*{HandbookABM}, consumption decision for a buyer is separated into two steps: consumption budget and consumption bundle.
+Following \citet*{HandbookABM}, consumption decision for a buyer is separated
+into two steps: consumption budget and consumption bundle.
 
 \subsubsection*{Consumption Budget}
 
-We follow the simple keynesian setting and let the consumption be a proportion of its disposable income
+We follow the simple keynesian setting and let the consumption be a proportion
+of its disposable income
 
 \begin{definition}[General Rule of Consumption]
    {\phantom{text} \\}
@@ -63,7 +65,9 @@ We follow the simple keynesian setting and let the consumption be a proportion o
    \begin{equation}
       C_{b,t} = \mathrm{MPC}\times \mathrm{DI}_{b,t} + a + \epsilon_t ,
    \end{equation}
-   where $\mathrm{MPC}$ is the marginal propensity to consume, $\mathrm{DI}$ is the disposable income, $a$ is the minimal amount of expenditure, and $\epsilon$ is a random shock on consumption.
+   where $\mathrm{MPC}$ is the marginal propensity to consume, $\mathrm{DI}$ is
+   the disposable income, $a$ is the minimal amount of expenditure, and
+   $\epsilon$ is a random shock on consumption.
 \end{definition}
 
 \subsubsection*{Consumption Bundle}
@@ -77,7 +81,9 @@ After all buyers complete deciding its consumption budget, they proceed to decid
    trading network $\mathcal{N}_b$.\footnote{See Appendix \ref{sec-network} for detail on the
    network.}
    \item If seller $s$ is out of stock, proceed to the next candidate.
-   \item If buyer $b$ itself is out of budget, one stops the consumption and the next buyer consumes.\footnote{In this agent-based model, buyers are activated randomly, but in order. In computer science this is called ``synchronous''.}
+   \item If buyer $b$ itself is out of budget, one stops the consumption and the
+   next buyer consumes.\footnote{In this agent-based model, buyers are activated
+   randomly, but in order. In computer science this is called ``synchronous''.}
    \item During each trade, the agents go through a payment decision process.
 \end{enumerate}
 \end{definition}
@@ -200,7 +206,10 @@ an asset.
 
 In the monetary search literature, a representative agent makes decision on the
 portfolio to maximizes ones value function in a centralized market, where the
-return of an asset is realized \citep*{LW05,LiLi19}. The value function of the centralized market includes the value function of the decentralized market, therefore the decision making of an agent's holding in the centralized market indirectly affect the success rate of an exchange in the next subperiod.
+return of an asset is realized \citep*{LW05,LiLi19}. The value function of the
+centralized market includes the value function of the decentralized market,
+therefore the decision making of an agent's holding in the centralized market
+indirectly affect the success rate of an exchange in the next subperiod.
 
 In an ABM setting, however, we are unable, and unrealistic, to construct a
 Bellman equation that captures the decision of MoP in the decentralized market
@@ -239,7 +248,11 @@ assets for a bank as an exogenous variable
    bank, and is set exogenously.
 \end{definition}
 
-I do not explicitly model the bank's asset portfolio, as well as its returns, since this is not the focus of this paper. The reserves, however, is clearly recorded. Moreover, the agents have transparent information about the leverage rate (using dept-to-equity). Agents trigger a bank run panic through observing this publicly announced information.
+I do not explicitly model the bank's asset portfolio, as well as its returns,
+since this is not the focus of this paper. The reserves, however, is clearly
+recorded. Moreover, the agents have transparent information about the leverage
+rate (using dept-to-equity). Agents trigger a bank run panic through observing
+this publicly announced information.
 
 \subsection{Bank Run}
 
@@ -248,13 +261,37 @@ The bank run is triggered by an panic criteria and the followed up imitation beh
 \begin{definition}
    [Panic criteria]
    \phantom{}\\
-   For an agent that has a D/E ratio tolerance ratio $\phi_a$, if the D/E ratio of a bank is higher than its tolerance ratio, $\mathrm{D/E}_b < \phi_a$, the agents withdraw all its deposits from the bank.
+   For an agent that has a D/E ratio tolerance ratio $\phi_a$, if the D/E ratio
+   of a bank is higher than its tolerance ratio, $\mathrm{D/E}_b < \phi_a$, the
+   agents withdraw all its deposits from the bank.
 \end{definition}
-Note that the tolerance ratio is heterogenous, so the bank run episode is not going to happen like an avalanche. The key mechanism is the imitation behavior, or herding behavior, that will spread the fear and causing the bank run to realize.
+Note that the tolerance ratio is heterogenous, so the bank run episode is not
+going to happen like an avalanche. The key mechanism is the imitation behavior,
+or herding behavior, that will spread the fear and causing the bank run to
+realize.
 
 \begin{definition}
    [Imitation Rule]
    \phantom{text} \\
-   If more than $\zeta \in [0,1]$ ratio of agents in its network withdraws from bank $b$ in past $T_{br}$ period, then the agent also withdraws, no matter whether the D/E ratio exceeds it tolerance ratio or not.
+   If more than $\zeta \in [0,1]$ ratio of agents in its network withdraws from
+   bank $b$ in past $T_{br}$ period, then the agent also withdraws, no matter
+   whether the D/E ratio exceeds it tolerance ratio or not.
 
 \end{definition}
+
+
+\subsection{Buyer-Seller Toggle}
+To motivate the adoption of a means of payment, it is necessary to let the
+receiver of a MoP, which is the seller, to have the opportunity of purchasing in
+the same economy. In this model, I simply let the buyer become a seller and a
+seller become a buyer periodically.
+
+All information about the MoP is passed down as state variables despite the
+agent is acting as a different role in the upcoming period. In other words, the
+MoP that a buyer is willing to pay is the MoP that one is willing to accept,
+unless while proceeding to the next period the agent observes enough occurrence
+of that MoP such that it starts to accept it in the next period.
+
+Seller reallocate its portfolio before turning into a buyer, this is a
+reasonable timing since the reallocation can affect the success rate of a trade
+in the next period.
